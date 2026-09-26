@@ -32,7 +32,7 @@ graph TD
     end
 
     %% AI Pipeline
-    subgraph Multi-Provider LLM Chain (Batched)
+    subgraph Multi_Provider_LLM_Chain_Batched[Multi-Provider LLM Chain Batched]
     F -->|Attempt 1| G(Groq - Llama 3 / Qwen)
     G -.->|Rate Limit 429| H(OpenRouter - Gemma / Liquid)
     H -.->|Rate Limit 429| I(Google Gemini 3.x Flash)
