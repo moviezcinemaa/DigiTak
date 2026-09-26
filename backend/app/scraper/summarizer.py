@@ -158,7 +158,15 @@ class Summarizer:
             from openai import AsyncOpenAI
             client = AsyncOpenAI(api_key=self.settings.groq_api_key, base_url="https://api.groq.com/openai/v1")
             response = await client.chat.completions.create(
-                model="qwen/qwen3.8-27b", messages=[{"role": "user", "content": prompt}], max_tokens=2000
+                model="llama3-8b-8192", messages=[{"role": "user", "content": prompt}], max_tokens=2000
+            )
+            return response.choices[0].message.content
+        elif provider == "openrouter":
+            from openai import AsyncOpenAI
+            client = AsyncOpenAI(api_key=self.settings.openrouter_api_key, base_url="https://openrouter.ai/api/v1")
+            response = await client.chat.completions.create(
+                model="google/gemma-4-26b-a4b-it:free", messages=[{"role": "user", "content": prompt}], max_tokens=2000,
+                extra_headers={"HTTP-Referer": self.settings.frontend_url, "X-Title": "DigiTak"}
             )
             return response.choices[0].message.content
         return None
@@ -230,9 +238,9 @@ class Summarizer:
         )
         
         models_to_try = [
-            "qwen/qwen3.8-27b",
-            "allam-2-7b",
-            "canopylabs/orpheus-v1-english"
+            "llama-3.1-8b-instant",
+            "llama-3.1-70b-versatile",
+            "mixtral-8x7b-32768"
         ]
 
         last_error = None
@@ -263,11 +271,10 @@ class Summarizer:
         )
         
         models_to_try = [
-            "google/gemma-4-26b-a4b-it:free",
-            "google/gemma-4-31b-it:free",
-            "qwen/qwen3.8-27b:free",
-            "liquid/lfm-2.5-2.6b:free",
-            "openrouter/free",
+            "google/gemma-2-9b-it:free",
+            "meta-llama/llama-3.1-8b-instruct:free",
+            "mistralai/mistral-7b-instruct:free",
+            "openrouter/auto",
         ]
         
         last_error = None
