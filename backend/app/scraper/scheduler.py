@@ -77,11 +77,17 @@ async def run_scrape_cycle():
         for article in clustered_articles:
             # Step 2: Check for duplicates
             existing = await db.execute(
-                select(Article.id).where(Article.original_url == article.url)
+                select(Article).where(Article.original_url == article.url)
             )
-            if existing.scalar_one_or_none() is not None:
-                skip_count += 1
-                continue
+            existing_article = existing.scalar_one_or_none()
+            if existing_article:
+                if existing_article.ai_summary is None:
+                    db_article = existing_article
+                else:
+                    skip_count += 1
+                    continue
+            else:
+                db_article = None
 
             # Step 3: Fetch full article text if the feed only gave us a snippet
             text = article.text
@@ -118,24 +124,33 @@ async def run_scrape_cycle():
                     )
 
             # Step 5: Store in database with Phase 2 fields
-            db_article = Article(
-                original_headline=article.headline,
-                original_url=article.url,
-                source_domain=article.source_domain,
-                ai_summary=ai_summary,
-                market_impact=market_impact,
-                published_at=article.published_at,
-                created_at=datetime.now(timezone.utc),
-                # Phase 2
-                image_url=final_image_url,
-                image_source=final_image_source,
-                detailed_summary=detailed_summary,
-                category=category,
-                tags=tags if tags else [],
-                # Phase 3
-                additional_sources=article.additional_sources,
-            )
-            db.add(db_article)
+            if db_article is None:
+                db_article = Article(
+                    original_headline=article.headline,
+                    original_url=article.url,
+                    source_domain=article.source_domain,
+                    ai_summary=ai_summary,
+                    market_impact=market_impact,
+                    published_at=article.published_at,
+                    created_at=datetime.now(timezone.utc),
+                    # Phase 2
+                    image_url=final_image_url,
+                    image_source=final_image_source,
+                    detailed_summary=detailed_summary,
+                    category=category,
+                    tags=tags if tags else [],
+                    # Phase 3
+                    additional_sources=article.additional_sources,
+                )
+                db.add(db_article)
+            else:
+                # Update the existing un-summarized article
+                db_article.ai_summary = ai_summary
+                db_article.market_impact = market_impact
+                db_article.detailed_summary = detailed_summary
+                db_article.category = category
+                db_article.tags = tags if tags else []
+                
             new_count += 1
             await db.commit()
 

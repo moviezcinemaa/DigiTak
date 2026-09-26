@@ -84,15 +84,8 @@ class Summarizer:
                 logger.error(f"Provider {provider} failed: {e}")
                 continue
 
-        logger.error("All LLM providers failed for summarization. Using fallback.")
-        return SummarizationResult(
-            ai_summary="This is an automated fallback summary due to API rate limits.",
-            market_impact="Market impact analysis unavailable due to API rate limits.",
-            detailed_summary="We are currently experiencing high volume and have hit our API rate limits. This is an automated fallback summary. Please check back later for full AI analysis.",
-            category="Stocks",
-            tags=[],
-            provider="fallback",
-        )
+        logger.error("All LLM providers failed for summarization.")
+        return None
 
     async def _call_provider(
         self, provider: str, prompt: str

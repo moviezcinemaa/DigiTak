@@ -38,8 +38,8 @@ async def list_articles(
     """List articles with optional category and source filtering."""
     offset = (page - 1) * per_page
 
-    query = select(Article).order_by(desc(Article.published_at))
-    count_query = select(func.count(Article.id))
+    query = select(Article).where(Article.ai_summary.is_not(None)).order_by(desc(Article.published_at))
+    count_query = select(func.count(Article.id)).where(Article.ai_summary.is_not(None))
 
     if source:
         query = query.where(Article.source_domain == source)
@@ -112,6 +112,7 @@ async def get_related_articles(
         .where(
             and_(
                 Article.id != article_id,
+                Article.ai_summary.is_not(None),
                 or_(*conditions),
             )
         )
@@ -138,8 +139,9 @@ async def search_articles(
     query = (
         select(Article)
         .where(
-            text(
-                "articles_fts_vector(original_headline, tags) @@ to_tsquery('english', :q)"
+            and_(
+                Article.ai_summary.is_not(None),
+                text("articles_fts_vector(original_headline, tags) @@ to_tsquery('english', :q)")
             )
         )
         .params(q=sanitized)
