@@ -34,7 +34,9 @@ async def run_scrape_cycle():
     since_hours = 1
     async with async_session() as db:
         from sqlalchemy import func
-        last_article = await db.scalar(select(func.max(Article.created_at)))
+        last_article = await db.scalar(
+            select(func.max(Article.created_at)).where(Article.ai_summary.is_not(None))
+        )
         if last_article is None:
             since_hours = 72
             logger.info("Cold start detected: fetching news from the past 72 hours.")
