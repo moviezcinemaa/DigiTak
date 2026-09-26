@@ -14,5 +14,5 @@ COPY . .
 
 EXPOSE 8000
 
-# Run alembic migrations and start server with 4 workers for production
-CMD sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4"
+# Run alembic migrations and start server with 1 worker for production to avoid OOM
+CMD sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"

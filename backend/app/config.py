@@ -1,5 +1,6 @@
 import os
 from pydantic_settings import BaseSettings
+from pydantic import model_validator
 from functools import lru_cache
 
 
@@ -26,6 +27,14 @@ class Settings(BaseSettings):
         "env_file_encoding": "utf-8",
         "extra": "ignore",
     }
+
+    @model_validator(mode='after')
+    def fix_database_urls(self) -> 'Settings':
+        if self.database_url and self.database_url.startswith("postgres://"):
+            self.database_url = self.database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+        if self.database_url_sync and self.database_url_sync.startswith("postgres://"):
+            self.database_url_sync = self.database_url_sync.replace("postgres://", "postgresql://", 1)
+        return self
 
 
 @lru_cache
