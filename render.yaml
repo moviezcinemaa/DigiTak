@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: digitak-backend
+    env: python
+    buildCommand: "cd backend && pip install -r requirements.txt"
+    startCommand: "cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 4"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: digitak-db
+          property: connectionString
+      - key: DATABASE_URL_SYNC
+        value: ${DATABASE_URL}
+      - key: ENVIRONMENT
+        value: production
+      - key: FRONTEND_URL
+        value: "https://digitak.onrender.com" # Update this to the actual frontend URL once deployed
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+
+  - type: web
+    name: digitak-frontend
+    env: static
+    buildCommand: "cd frontend && npm install && npm run build"
+    staticPublishPath: "./frontend/dist"
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: digitak-backend
+          envVarKey: RENDER_EXTERNAL_URL
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: digitak-db
+    databaseName: digitak
+    user: digitak
+    plan: free

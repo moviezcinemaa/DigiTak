@@ -93,3 +93,33 @@ DigiTak/
 2. **OpenRouter API**: Secondary fallback AI layer.
 3. **Google Gemini API**: Tertiary fallback AI layer (`gemini-3.8-flash`).
 4. **RSS Feeds**: Aggregating raw data from Yahoo Finance, MarketWatch, CNBC, CoinTelegraph, Investing.com, and MoneyControl.
+
+---
+
+## 🚀 Deployment (Production Ready)
+
+DigiTak is fully configured for zero-downtime production deployment.
+
+### Option 1: 1-Click Render.com Deployment
+
+The repository includes a `render.yaml` Blueprint for native deployment on Render.com.
+
+1. Fork this repository.
+2. Sign in to [Render](https://render.com) and go to **Blueprints** > **New Blueprint Instance**.
+3. Connect your GitHub repository.
+4. Render will automatically provision:
+   - A managed PostgreSQL instance (Free Tier).
+   - A highly concurrent Python Web Service for the FastAPI backend.
+   - A blazing-fast Static Site for the React frontend on their CDN.
+5. In the Render Dashboard, add your `GEMINI_API_KEY` and `GROQ_API_KEY` to the Backend service environment variables.
+
+### Option 2: Docker Compose (VPS / Self-Hosted)
+
+For self-hosting on a VPS (DigitalOcean, Hetzner, AWS EC2):
+
+1. Create a `.env` file with your API keys and secure `POSTGRES_PASSWORD`.
+2. Build and start the production environment:
+   ```bash
+   docker-compose -f docker-compose.prod.yml up -d --build
+   ```
+This setup uses **Nginx** to serve the frontend and starts the backend with **Uvicorn Workers (Gunicorn equivalent)**.
