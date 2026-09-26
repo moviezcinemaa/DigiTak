@@ -25,7 +25,7 @@ SUMMARIZATION_PROMPT = """You are a senior financial news analyst writing for a 
 
 Given the following article headline and text, produce a JSON response with exactly three fields:
 
-1. "detailed_summary": A highly detailed, professional financial summary. It MUST be between 200 and 250 words. Write in a formal journalistic tone. Include relevant context about why this news matters, what led to it, and what it means for investors. Break complex topics into digestible insights. Do NOT use bullet points inside this field — write flowing paragraphs.
+1. "detailed_summary": A highly detailed, professional financial summary. CRITICAL RULE: It MUST be exactly 3 robust paragraphs and strictly between 200 and 250 words. Write in a formal journalistic tone. Include relevant context about why this news matters, what led to it, and what it means for investors. Break complex topics into digestible insights. Do NOT use bullet points — write flowing paragraphs. If the provided source text is very short, you MUST extrapolate the broader macroeconomic context, background of the companies involved, and market implications to ensure you meet the strict 200-word length requirement.
 
 2. "category": Classify the article into EXACTLY ONE primary category from this list: "IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities". Choose the most dominant topic. 
 
