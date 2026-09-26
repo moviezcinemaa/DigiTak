@@ -5,6 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import router
 from app.scraper.scheduler import start_scheduler, stop_scheduler
 from app.config import get_settings
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,6 +23,8 @@ async def lifespan(app: FastAPI):
     
     # NOTE: APScheduler handles background scraping. 
     # Deduplication logic in scheduler.py prevents overlap automatically!
+    
+    FastAPICache.init(InMemoryBackend(), prefix="digitak-cache")
 
     start_scheduler()
     yield
@@ -35,6 +40,8 @@ app = FastAPI(
 )
 
 settings = get_settings()
+
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 app.add_middleware(
     CORSMiddleware,

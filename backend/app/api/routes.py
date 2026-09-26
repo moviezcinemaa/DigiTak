@@ -13,6 +13,7 @@ from app.schemas import (
     HealthResponse,
 )
 from app.config import get_settings
+from fastapi_cache.decorator import cache
 
 router = APIRouter()
 settings = get_settings()
@@ -28,6 +29,7 @@ async def health_check():
 
 
 @router.get("/articles", response_model=ArticleListResponse)
+@cache(expire=300)
 async def list_articles(
     page: int = Query(1, ge=1),
     per_page: int = Query(20, ge=1, le=100),
@@ -126,6 +128,7 @@ async def get_related_articles(
 
 
 @router.get("/search", response_model=SearchResponse)
+@cache(expire=300)
 async def search_articles(
     q: str = Query(..., min_length=1, max_length=200),
     db: AsyncSession = Depends(get_db),

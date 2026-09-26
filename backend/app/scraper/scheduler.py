@@ -74,111 +74,123 @@ async def run_scrape_cycle():
         await db.execute(delete(Article).where(Article.created_at < cutoff))
         await db.commit()
 
+        import asyncio
+        semaphore = asyncio.Semaphore(10)
+        
+        async def prepare_article(article, existing_article=None):
+            async with semaphore:
+                db_article = existing_article
+                text = article.text
+                scraped_image = None
+                
+                if len(text) < 200 or not article.image_url:
+                    full_text, scraped_img = await fetch_article_text(article.url)
+                    if full_text and len(full_text) > len(text):
+                        text = full_text
+                    if scraped_img and not article.image_url:
+                        scraped_image = scraped_img
+                        
+                    if len(text) < 200:
+                        try:
+                            from duckduckgo_search import DDGS
+                            def perform_search():
+                                with DDGS() as ddgs:
+                                    return list(ddgs.news(article.headline, max_results=3))
+                            results = await asyncio.to_thread(perform_search)
+                            if results:
+                                for r in results:
+                                    if r.get('url') and r['url'] != article.url:
+                                        search_url = r['url']
+                                        s_text, _ = await fetch_article_text(search_url)
+                                        if s_text and len(s_text) > 100:
+                                            text += f"\n\n--- Source: {r.get('source', search_url)} ---\n" + s_text
+                                            article.additional_sources.append({
+                                                "url": search_url, 
+                                                "domain": r.get('source', search_url), 
+                                                "headline": r.get('title', article.headline)
+                                            })
+                        except Exception as e:
+                            from app.scraper.feed_reader import logger
+                            logger.error(f"DDG Search failed for '{article.headline}': {e}")
+                
+                final_image_url = article.image_url or scraped_image
+                final_image_source = article.source_domain if final_image_url else None
+                
+                return {
+                    "feed_article": article,
+                    "db_article": db_article,
+                    "text": text,
+                    "final_image_url": final_image_url,
+                    "final_image_source": final_image_source
+                }
+
+        tasks = []
         for article in clustered_articles:
-            # Step 2: Check for duplicates
-            existing = await db.execute(
-                select(Article).where(Article.original_url == article.url)
-            )
+            existing = await db.execute(select(Article).where(Article.original_url == article.url))
             existing_article = existing.scalar_one_or_none()
             if existing_article:
                 if existing_article.ai_summary is None:
-                    db_article = existing_article
+                    tasks.append(prepare_article(article, existing_article))
                 else:
                     skip_count += 1
-                    continue
             else:
-                db_article = None
-
-            # Step 3: Fetch full article text if the feed only gave us a snippet
-            text = article.text
-            scraped_image = None
-            if len(text) < 200 or not article.image_url:
-                full_text, scraped_img = await fetch_article_text(article.url)
-                if full_text and len(full_text) > len(text):
-                    text = full_text
-                if scraped_img and not article.image_url:
-                    scraped_image = scraped_img
-                    
-                # NEW LOGIC: Actively search for more sources if text is STILL too short
-                if len(text) < 200:
-                    try:
-                        import asyncio
-                        from duckduckgo_search import DDGS
-                        
-                        def perform_search():
-                            with DDGS() as ddgs:
-                                return list(ddgs.news(article.headline, max_results=3))
-                                
-                        results = await asyncio.to_thread(perform_search)
-                        if results:
-                            for r in results:
-                                if r.get('url') and r['url'] != article.url:
-                                    search_url = r['url']
-                                    s_text, _ = await fetch_article_text(search_url)
-                                    if s_text and len(s_text) > 100:
-                                        text += f"\n\n--- Source: {r.get('source', search_url)} ---\n" + s_text
-                                        article.additional_sources.append({
-                                            "url": search_url, 
-                                            "domain": r.get('source', search_url), 
-                                            "headline": r.get('title', article.headline)
-                                        })
-                    except Exception as e:
-                        from app.scraper.feed_reader import logger
-                        logger.error(f"DDG Search failed for '{article.headline}': {e}")
-
-            # Determine final image and source
-            final_image_url = article.image_url or scraped_image
-            final_image_source = article.source_domain if final_image_url else None
-
-            # Step 4: Summarize via LLM — Phase 2 structured output
-            ai_summary = None
-            market_impact = None
-            detailed_summary = None
-            category = None
-            tags = []
-
-            if text:
-                result = await summarizer.summarize(article.headline, text)
-                if result:
-                    ai_summary = result.ai_summary
-                    market_impact = result.market_impact
-                    detailed_summary = result.detailed_summary
-                    category = result.category
-                    tags = result.tags
-                    logger.info(
-                        f"Summarized via {result.provider} [{category}]: "
-                        f"{article.headline[:60]}"
-                    )
-
-            # Step 5: Store in database with Phase 2 fields
-            if db_article is None:
-                db_article = Article(
-                    original_headline=article.headline,
-                    original_url=article.url,
-                    source_domain=article.source_domain,
-                    ai_summary=ai_summary,
-                    market_impact=market_impact,
-                    published_at=article.published_at,
-                    created_at=datetime.now(timezone.utc),
-                    # Phase 2
-                    image_url=final_image_url,
-                    image_source=final_image_source,
-                    detailed_summary=detailed_summary,
-                    category=category,
-                    tags=tags if tags else [],
-                    # Phase 3
-                    additional_sources=article.additional_sources,
-                )
-                db.add(db_article)
-            else:
-                # Update the existing un-summarized article
-                db_article.ai_summary = ai_summary
-                db_article.market_impact = market_impact
-                db_article.detailed_summary = detailed_summary
-                db_article.category = category
-                db_article.tags = tags if tags else []
+                tasks.append(prepare_article(article, None))
                 
-            new_count += 1
+        prepared_articles = await asyncio.gather(*tasks)
+
+        # Step 4: Batch Summarize in chunks of 5
+        batch_size = 5
+        for i in range(0, len(prepared_articles), batch_size):
+            chunk = prepared_articles[i:i+batch_size]
+            
+            llm_input = []
+            for idx, item in enumerate(chunk):
+                llm_input.append({
+                    "id": idx,
+                    "headline": item["feed_article"].headline,
+                    "text": item["text"][:4000]
+                })
+                
+            summaries = await summarizer.summarize_batch(llm_input)
+            
+            for idx, item in enumerate(chunk):
+                summary_res = summaries[idx] if idx < len(summaries) else None
+                ai_summary = summary_res.ai_summary if summary_res else None
+                market_impact = summary_res.market_impact if summary_res else None
+                detailed_summary = summary_res.detailed_summary if summary_res else None
+                category = summary_res.category if summary_res else None
+                tags = summary_res.tags if summary_res else []
+                
+                if summary_res:
+                    logger.info(f"Summarized via {summary_res.provider} [{category}]: {item['feed_article'].headline[:60]}")
+                
+                if item["db_article"] is None:
+                    db_article = Article(
+                        original_headline=item["feed_article"].headline,
+                        original_url=item["feed_article"].url,
+                        source_domain=item["feed_article"].source_domain,
+                        ai_summary=ai_summary,
+                        market_impact=market_impact,
+                        published_at=item["feed_article"].published_at,
+                        created_at=datetime.now(timezone.utc),
+                        image_url=item["final_image_url"],
+                        image_source=item["final_image_source"],
+                        detailed_summary=detailed_summary,
+                        category=category,
+                        tags=tags,
+                        additional_sources=item["feed_article"].additional_sources,
+                    )
+                    db.add(db_article)
+                else:
+                    db_article = item["db_article"]
+                    db_article.ai_summary = ai_summary
+                    db_article.market_impact = market_impact
+                    db_article.detailed_summary = detailed_summary
+                    db_article.category = category
+                    db_article.tags = tags
+                    
+                new_count += 1
+                
             await db.commit()
 
     logger.info(f"Scrape cycle complete: {new_count} new, {skip_count} skipped")

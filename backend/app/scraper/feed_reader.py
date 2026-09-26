@@ -162,14 +162,17 @@ async def read_feeds(since_hours: int = 1) -> list[FeedArticle]:
     from datetime import timedelta
     cutoff = datetime.now(timezone.utc) - timedelta(hours=since_hours)
 
-    for feed_url in RSS_FEEDS:
+    import asyncio
+    
+    async def process_feed(feed_url: str) -> list[FeedArticle]:
+        feed_articles = []
         try:
-            feed = feedparser.parse(feed_url)
+            feed = await asyncio.to_thread(feedparser.parse, feed_url)
             if feed.bozo and not feed.entries:
                 logger.warning(f"Failed to parse feed: {feed_url}")
-                continue
+                return feed_articles
 
-            for entry in feed.entries:  # Process all entries in the feed
+            for entry in feed.entries:
                 url = entry.get("link", "")
                 if not url:
                     continue
@@ -178,7 +181,6 @@ async def read_feeds(since_hours: int = 1) -> list[FeedArticle]:
                 if not headline:
                     continue
 
-                # Extract preview text from feed entry if available
                 summary = entry.get("summary", "")
                 if summary:
                     soup = BeautifulSoup(summary, "html.parser")
@@ -186,16 +188,13 @@ async def read_feeds(since_hours: int = 1) -> list[FeedArticle]:
                 else:
                     preview_text = ""
 
-                # Extract image URL from enclosure/media tags
                 image_url = _extract_image_url(entry)
-
                 published_at = _parse_published_date(entry)
                 
-                # Filter by age if published_at is available
                 if published_at and published_at < cutoff:
                     continue
 
-                articles.append(
+                feed_articles.append(
                     FeedArticle(
                         headline=headline,
                         url=url,
@@ -207,6 +206,12 @@ async def read_feeds(since_hours: int = 1) -> list[FeedArticle]:
                 )
         except Exception as e:
             logger.error(f"Error processing feed {feed_url}: {e}")
+            
+        return feed_articles
+
+    results = await asyncio.gather(*(process_feed(url) for url in RSS_FEEDS))
+    for result_list in results:
+        articles.extend(result_list)
 
     logger.info(f"Read {len(articles)} articles from {len(RSS_FEEDS)} feeds")
     return articles

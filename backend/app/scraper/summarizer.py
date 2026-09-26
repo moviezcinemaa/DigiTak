@@ -39,6 +39,29 @@ Article text: {text}
 Respond with ONLY valid JSON, no markdown formatting or code blocks. Example:
 {{"detailed_summary": "...", "category": "Stocks", "tags": ["RELIANCE", "NIFTY50"]}}"""
 
+SUMMARIZE_BATCH_PROMPT = """You are a senior financial news analyst.
+You will be provided a JSON array of articles.
+For EACH article, produce exactly one summary object.
+
+Return a JSON array of objects, where each object corresponds to the input article in the exact same order.
+Each output object MUST have exactly these fields:
+1. "detailed_summary": exactly 3 paragraphs, 200-250 words. Do NOT hallucinate.
+2. "category": EXACTLY ONE of "IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities".
+3. "tags": Array of up to 7 items (tickers, secondary categories).
+
+Input Format:
+[
+  {"id": 0, "headline": "...", "text": "..."},
+  {"id": 1, "headline": "...", "text": "..."}
+]
+
+Output Format:
+[
+  {"id": 0, "detailed_summary": "...", "category": "Stocks", "tags": [...]},
+  {"id": 1, ...}
+]
+"""
+
 
 @dataclass
 class SummarizationResult:
@@ -65,6 +88,80 @@ class Summarizer:
         if self.settings.openrouter_api_key:
             providers.append("openrouter")
         return providers
+
+    async def summarize_batch(
+        self, articles: list[dict]
+    ) -> list[Optional[SummarizationResult]]:
+        """Batch summarize multiple articles at once to save API quota."""
+        if not articles:
+            return []
+            
+        if not self._providers:
+            return [None] * len(articles)
+            
+        # Serialize the articles list to JSON string for the prompt
+        prompt = SUMMARIZE_BATCH_PROMPT + "\n\nInput:\n" + json.dumps(articles, ensure_ascii=False)
+        
+        for provider in self._providers:
+            try:
+                response_text = await self._call_provider_raw(provider, prompt)
+                if not response_text: continue
+                
+                start_idx = response_text.find("[")
+                end_idx = response_text.rfind("]")
+                if start_idx == -1 or end_idx == -1:
+                    continue
+                    
+                json_str = response_text[start_idx : end_idx + 1]
+                data = json.loads(json_str)
+                
+                if not isinstance(data, list) or len(data) != len(articles):
+                    continue
+                
+                results = []
+                for item in data:
+                    detailed = item.get("detailed_summary", "Summary unavailable.")
+                    category = item.get("category", "Economy")
+                    tags = item.get("tags", [])
+                    if not isinstance(tags, list): tags = []
+                    
+                    words = detailed.split()
+                    ai_short = " ".join(words[:60]) + ("..." if len(words) > 60 else "")
+                    
+                    results.append(
+                        SummarizationResult(
+                            ai_summary=ai_short,
+                            market_impact=f"- Category: {category}\n- See detailed analysis",
+                            detailed_summary=detailed,
+                            category=category,
+                            tags=tags,
+                            provider=provider,
+                        )
+                    )
+                return results
+            except Exception as e:
+                logger.error(f"Provider {provider} failed for batch: {e}")
+                continue
+
+        logger.error("All LLM providers failed for batch summarization.")
+        return [None] * len(articles)
+
+    async def _call_provider_raw(self, provider: str, prompt: str) -> Optional[str]:
+        # Bypasses the normal parsing to just return the raw string
+        if provider == "gemini":
+            import google.generativeai as genai
+            genai.configure(api_key=self.settings.gemini_api_key)
+            model = genai.GenerativeModel("gemini-3.7-flash")
+            response = await model.generate_content_async(prompt)
+            return response.text
+        elif provider == "groq":
+            from openai import AsyncOpenAI
+            client = AsyncOpenAI(api_key=self.settings.groq_api_key, base_url="https://api.groq.com/openai/v1")
+            response = await client.chat.completions.create(
+                model="qwen/qwen3.8-27b", messages=[{"role": "user", "content": prompt}], max_tokens=2000
+            )
+            return response.choices[0].message.content
+        return None
 
     async def summarize(
         self, headline: str, text: str
