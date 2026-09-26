@@ -70,6 +70,7 @@ async def list_articles(
 
 
 @router.get("/articles/{article_id}", response_model=ArticleResponse)
+@cache(expire=3600)
 async def get_article(article_id: UUID, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Article).where(Article.id == article_id))
     article = result.scalar_one_or_none()
@@ -79,6 +80,7 @@ async def get_article(article_id: UUID, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/articles/{article_id}/related", response_model=list[ArticleResponse])
+@cache(expire=3600)
 async def get_related_articles(
     article_id: UUID,
     db: AsyncSession = Depends(get_db),
