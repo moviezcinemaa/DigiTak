@@ -1,0 +1,25 @@
+# Web framework
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+
+# Database
+sqlalchemy[asyncio]==2.1.1
+asyncpg==0.30.0
+psycopg[binary]==3.3.6
+alembic==1.14.1
+
+# Scraping
+feedparser==6.0.11
+httpx==0.28.1
+beautifulsoup4==4.12.3
+
+# LLM providers
+openai==1.58.1
+google-generativeai==0.8.4
+
+# Scheduling
+apscheduler==3.10.4
+
+# Utilities
+python-dotenv==1.0.1
+pydantic-settings==2.7.1
