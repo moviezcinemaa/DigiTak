@@ -19,7 +19,7 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL
-        value: "https://digitak.onrender.com" # Update this to the actual frontend URL once deployed
+        value: "https://digitak-frontend.onrender.com"
       - key: GEMINI_API_KEY
         sync: false
       - key: GROQ_API_KEY
