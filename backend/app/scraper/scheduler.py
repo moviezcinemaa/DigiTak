@@ -37,9 +37,12 @@ async def run_scrape_cycle():
         last_article = await db.scalar(
             select(func.max(Article.created_at)).where(Article.ai_summary.is_not(None))
         )
-        if last_article is None:
+        unsummarized_count = await db.scalar(
+            select(func.count(Article.id)).where(Article.ai_summary.is_(None))
+        )
+        if last_article is None or (unsummarized_count and unsummarized_count > 0):
             since_hours = 72
-            logger.info("Cold start detected: fetching news from the past 72 hours.")
+            logger.info(f"Cold start or {unsummarized_count} unsummarized articles detected: fetching news from the past 72 hours.")
         else:
             logger.info("Fetching news from the last 1 hour.")
 
