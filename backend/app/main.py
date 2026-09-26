@@ -18,18 +18,8 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     logger.info(f"DigiTak API starting ({settings.environment})")
     
-    # Wipe the database completely on fresh startup to avoid overlap
-    from app.database import async_session
-    from app.models import Article
-    from sqlalchemy import delete
-    
-    try:
-        async with async_session() as db:
-            result = await db.execute(delete(Article))
-            await db.commit()
-            logger.info(f"Database wiped clean on startup. Deleted {result.rowcount} old articles.")
-    except Exception as e:
-        logger.error(f"Failed to wipe database on startup: {e}")
+    # NOTE: APScheduler handles background scraping. 
+    # Deduplication logic in scheduler.py prevents overlap automatically!
 
     start_scheduler()
     yield
