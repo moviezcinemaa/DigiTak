@@ -84,9 +84,9 @@ export default function Home() {
 
   return (
     <>
-      <h1 className="page-heading">Financial Intelligence Feed</h1>
+      <h1 className="page-heading">Global Financial Intelligence</h1>
       <p className="page-subheading">
-        AI-summarized financial news, updated hourly.
+        Raw market data distilled into actionable insights. Powered by a resilient 17-model AI chain, stripping the noise from global financial coverage.
       </p>
 
       <SearchBar
