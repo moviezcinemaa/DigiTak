@@ -95,10 +95,20 @@ a:hover {
   color: var(--text-primary);
   text-decoration: none;
   letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .site-title:hover {
   color: var(--accent);
+}
+
+.site-logo {
+  height: 28px;
+  width: 28px;
+  object-fit: cover;
+  border: 1px solid var(--text-primary);
 }
 
 .site-nav {

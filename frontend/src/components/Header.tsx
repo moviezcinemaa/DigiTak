@@ -8,7 +8,8 @@ export default function Header() {
     <header className="site-header">
       <div className="header-inner">
         <Link to="/" className="site-title">
-          DigiTak
+          <img src="/favicon.jpg" alt="DigiTak Logo" className="site-logo" />
+          <span>DigiTak</span>
         </Link>
         <button
           className="nav-toggle"
