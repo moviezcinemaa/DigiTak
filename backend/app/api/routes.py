@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from uuid import UUID
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc, text, or_, and_, any_
 from app.database import get_db
@@ -13,6 +13,7 @@ from app.schemas import (
     HealthResponse,
 )
 from app.config import get_settings
+from app.limiter import limiter
 from fastapi_cache.decorator import cache
 
 router = APIRouter()
@@ -29,8 +30,10 @@ async def health_check():
 
 
 @router.get("/articles", response_model=ArticleListResponse)
+@limiter.limit("100/minute")
 @cache(expire=300)
 async def list_articles(
+    request: Request,
     page: int = Query(1, ge=1),
     per_page: int = Query(20, ge=1, le=100),
     source: Optional[str] = Query(None),
@@ -70,8 +73,9 @@ async def list_articles(
 
 
 @router.get("/articles/{article_id}", response_model=ArticleResponse)
+@limiter.limit("60/minute")
 @cache(expire=3600)
-async def get_article(article_id: UUID, db: AsyncSession = Depends(get_db)):
+async def get_article(request: Request, article_id: UUID, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Article).where(Article.id == article_id))
     article = result.scalar_one_or_none()
     if not article:
@@ -80,8 +84,10 @@ async def get_article(article_id: UUID, db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/articles/{article_id}/related", response_model=list[ArticleResponse])
+@limiter.limit("60/minute")
 @cache(expire=3600)
 async def get_related_articles(
+    request: Request,
     article_id: UUID,
     db: AsyncSession = Depends(get_db),
 ):
@@ -130,8 +136,10 @@ async def get_related_articles(
 
 
 @router.get("/search", response_model=SearchResponse)
+@limiter.limit("30/minute")
 @cache(expire=300)
 async def search_articles(
+    request: Request,
     q: str = Query(..., min_length=1, max_length=200),
     db: AsyncSession = Depends(get_db),
 ):

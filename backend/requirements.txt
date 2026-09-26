@@ -3,6 +3,7 @@ fastapi==0.115.6
 uvicorn[standard]==0.34.0
 fastapi-cache2==0.2.2
 brotli==1.1.0
+slowapi==0.1.9
 
 # Database
 sqlalchemy[asyncio]==2.1.1

@@ -8,6 +8,9 @@ from app.config import get_settings
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
+from app.limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 logging.basicConfig(
     level=logging.INFO,
@@ -40,6 +43,9 @@ app = FastAPI(
 )
 
 settings = get_settings()
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
