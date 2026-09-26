@@ -98,6 +98,33 @@ async def run_scrape_cycle():
                     text = full_text
                 if scraped_img and not article.image_url:
                     scraped_image = scraped_img
+                    
+                # NEW LOGIC: Actively search for more sources if text is STILL too short
+                if len(text) < 200:
+                    try:
+                        import asyncio
+                        from duckduckgo_search import DDGS
+                        
+                        def perform_search():
+                            with DDGS() as ddgs:
+                                return list(ddgs.news(article.headline, max_results=3))
+                                
+                        results = await asyncio.to_thread(perform_search)
+                        if results:
+                            for r in results:
+                                if r.get('url') and r['url'] != article.url:
+                                    search_url = r['url']
+                                    s_text, _ = await fetch_article_text(search_url)
+                                    if s_text and len(s_text) > 100:
+                                        text += f"\n\n--- Source: {r.get('source', search_url)} ---\n" + s_text
+                                        article.additional_sources.append({
+                                            "url": search_url, 
+                                            "domain": r.get('source', search_url), 
+                                            "headline": r.get('title', article.headline)
+                                        })
+                    except Exception as e:
+                        from app.scraper.feed_reader import logger
+                        logger.error(f"DDG Search failed for '{article.headline}': {e}")
 
             # Determine final image and source
             final_image_url = article.image_url or scraped_image
