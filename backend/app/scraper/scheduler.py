@@ -205,6 +205,7 @@ def start_scheduler():
         minutes=settings.scrape_interval_minutes,
         id="scrape_cycle",
         replace_existing=True,
+        next_run_time=datetime.now(timezone.utc),
     )
     scheduler.start()
     logger.info(
