@@ -104,16 +104,8 @@ class Summarizer:
         
         for provider in self._providers:
             try:
-                response_text = await self._call_provider_raw(provider, prompt)
-                if not response_text: continue
-                
-                start_idx = response_text.find("[")
-                end_idx = response_text.rfind("]")
-                if start_idx == -1 or end_idx == -1:
-                    continue
-                    
-                json_str = response_text[start_idx : end_idx + 1]
-                data = json.loads(json_str)
+                data = await self._call_provider_batch(provider, prompt)
+                if not data: continue
                 
                 if not isinstance(data, list) or len(data) != len(articles):
                     continue
@@ -146,14 +138,31 @@ class Summarizer:
         logger.error("All LLM providers failed for batch summarization.")
         return [None] * len(articles)
 
-    async def _call_provider_raw(self, provider: str, prompt: str) -> Optional[str]:
-        # Bypasses the normal parsing to just return the raw string
+    async def _call_provider_batch(self, provider: str, prompt: str) -> Optional[list]:
+        def extract_and_parse_json(text: str) -> list:
+            start_idx = text.find("[")
+            end_idx = text.rfind("]")
+            if start_idx == -1 or end_idx == -1:
+                raise ValueError("No JSON array found in response")
+            return json.loads(text[start_idx : end_idx + 1])
+
         if provider == "gemini":
             import google.generativeai as genai
             genai.configure(api_key=self.settings.gemini_api_key)
-            model = genai.GenerativeModel("gemini-3.7-flash")
-            response = await model.generate_content_async(prompt)
-            return response.text
+            models = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash"]
+            last_err = None
+            for model_name in models:
+                try:
+                    model = genai.GenerativeModel(model_name)
+                    response = await model.generate_content_async(prompt)
+                    return extract_and_parse_json(response.text)
+                except Exception as e:
+                    last_err = e
+                    continue
+            if last_err:
+                raise last_err
+            raise Exception("No Gemini models available or all failed.")
+            
         elif provider == "groq":
             from openai import AsyncOpenAI
             client = AsyncOpenAI(api_key=self.settings.groq_api_key, base_url="https://api.groq.com/openai/v1")
@@ -181,7 +190,7 @@ class Summarizer:
                     response = await client.chat.completions.create(
                         model=model_name, messages=[{"role": "user", "content": prompt}], max_tokens=2000
                     )
-                    return response.choices[0].message.content
+                    return extract_and_parse_json(response.choices[0].message.content)
                 except Exception as e:
                     last_err = e
                     continue
@@ -201,7 +210,7 @@ class Summarizer:
                         model=model_name, messages=[{"role": "user", "content": prompt}], max_tokens=2000,
                         extra_headers={"HTTP-Referer": self.settings.frontend_url, "X-Title": "DigiTak"}
                     )
-                    return response.choices[0].message.content
+                    return extract_and_parse_json(response.choices[0].message.content)
                 except Exception as e:
                     last_err = e
                     continue
