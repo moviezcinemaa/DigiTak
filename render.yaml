@@ -10,11 +10,11 @@ services:
         value: 3.12.0
       - key: DATABASE_URL
         fromDatabase:
-          name: gofact-db
+          name: digitak-db
           property: connectionString
       - key: DATABASE_URL_SYNC
         fromDatabase:
-          name: gofact-db
+          name: digitak-db
           property: connectionString
       - key: ENVIRONMENT
         value: production
@@ -44,7 +44,7 @@ services:
         destination: /index.html
 
 databases:
-  - name: gofact-db
-    databaseName: gofact
-    user: gofact
+  - name: digitak-db
+    databaseName: digitak
+    user: digitak
     plan: free
