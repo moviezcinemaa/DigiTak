@@ -1203,10 +1203,11 @@ a:hover {
 
 .movie-entry-poster {
   width: 100%;
+  max-width: 280px;
+  margin: 0 auto 24px auto;
   aspect-ratio: 2 / 3;
   object-fit: cover;
   display: block;
-  margin-bottom: 24px;
   border: 1px solid var(--border-color);
 }
 
@@ -1469,7 +1470,7 @@ a:hover {
 
 @media (max-width: 600px) {
   .movies-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
 

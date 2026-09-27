@@ -57,7 +57,7 @@ export default function DownloadOptions() {
             className="movie-entry-poster"
           />
         ) : (
-          <div className="movie-poster-placeholder" style={{ marginBottom: "24px", width: "100%", aspectRatio: "2/3" }}>
+          <div className="movie-poster-placeholder" style={{ margin: "0 auto 24px auto", maxWidth: "280px", width: "100%", aspectRatio: "2/3" }}>
             {movie.title[0]}
           </div>
         )}
