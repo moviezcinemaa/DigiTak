@@ -7,13 +7,22 @@ import type { MovieNews } from "../types/sanity";
 export default function MovieEntry() {
   const { slug } = useParams<{ slug: string }>();
   const [movie, setMovie] = useState<MovieNews | null>(null);
+  const [relatedMovies, setRelatedMovies] = useState<MovieNews[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!slug) return;
     const query = `*[_type == "movieNews" && slug.current == $slug][0]`;
-    sanityClient.fetch(query, { slug }).then((data: MovieNews | null) => {
-      setMovie(data);
+    const relatedQuery = `*[_type == "movieNews" && slug.current != $slug] | order(_createdAt desc)[0...4] {
+      _id, title, slug, poster
+    }`;
+    
+    Promise.all([
+      sanityClient.fetch(query, { slug }),
+      sanityClient.fetch(relatedQuery, { slug })
+    ]).then(([movieData, relatedData]) => {
+      setMovie(movieData);
+      setRelatedMovies(relatedData);
       setLoading(false);
     });
   }, [slug]);
@@ -67,6 +76,32 @@ export default function MovieEntry() {
           </div>
         </Link>
       </div>
+
+      {relatedMovies.length > 0 && (
+        <div className="related-section">
+          <h2 className="related-heading">More Movies</h2>
+          <div className="movies-grid">
+            {relatedMovies.map((relMovie) => (
+              <Link
+                key={relMovie._id}
+                to={`/movies/${relMovie.slug.current}`}
+                className="movie-card"
+              >
+                {relMovie.poster ? (
+                  <img
+                    src={urlFor(relMovie.poster).width(400).url()}
+                    alt={relMovie.title}
+                    className="movie-poster"
+                  />
+                ) : (
+                  <div className="movie-poster-placeholder">{relMovie.title[0]}</div>
+                )}
+                <h2 className="movie-card-title">{relMovie.title}</h2>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

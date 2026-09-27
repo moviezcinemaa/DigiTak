@@ -1011,14 +1011,14 @@ a:hover {
 
 .movie-poster {
   width: 100%;
-  height: 280px;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;
 }
 
 .movie-poster-placeholder {
   width: 100%;
-  height: 280px;
+  aspect-ratio: 16 / 9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1365,7 +1365,7 @@ a:hover {
 
   .movie-poster,
   .movie-poster-placeholder {
-    height: 200px;
+    height: auto;
   }
 
   .movie-card-title {
