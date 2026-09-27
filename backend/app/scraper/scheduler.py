@@ -101,65 +101,77 @@ async def run_scrape_cycle():
         await db.commit()
 
         # Step 4: Fetch up to 54 unsummarized articles from the DB to process
-        db_articles_to_process = (await db.execute(
+        db_articles = (await db.execute(
             select(Article).where(Article.ai_summary.is_(None)).order_by(desc(Article.published_at)).limit(54)
         )).scalars().all()
-
-        import asyncio
-        semaphore = asyncio.Semaphore(10)
         
-        url_to_rss_text = {a.url: a.text for a in clustered_articles}
-        
-        async def prepare_article(db_article):
-            async with semaphore:
-                text = url_to_rss_text.get(db_article.original_url, "")
-                scraped_image = None
-                
-                if len(text) < 200 or not db_article.image_url:
-                    full_text, scraped_img = await fetch_article_text(db_article.original_url)
-                    if full_text and len(full_text) > len(text):
-                        text = full_text
-                    if scraped_img and not db_article.image_url:
-                        scraped_image = scraped_img
-                        
-                    if len(text) < 200:
-                        try:
-                            from ddgs import DDGS
-                            def perform_search():
-                                with DDGS() as ddgs:
-                                    return list(ddgs.news(db_article.original_headline, max_results=3))
-                            results = await asyncio.to_thread(perform_search)
-                            if results:
-                                for r in results:
-                                    if r.get('url') and r['url'] != db_article.original_url:
-                                        search_url = r['url']
-                                        s_text, _ = await fetch_article_text(search_url)
-                                        if s_text and len(s_text) > 100:
-                                            text += f"\n\n--- Source: {r.get('source', search_url)} ---\n" + s_text
-                                            sources = list(db_article.additional_sources) if db_article.additional_sources else []
-                                            sources.append({
-                                                "url": search_url, 
-                                                "domain": r.get('source', search_url), 
-                                                "headline": r.get('title', db_article.original_headline)
-                                            })
-                                            db_article.additional_sources = sources
-                        except Exception as e:
-                            from app.scraper.feed_reader import logger
-                            logger.warning(f"DDG Search failed for '{db_article.original_headline}': {e}")
-                
-                final_image_url = db_article.image_url or scraped_image
-                final_image_source = db_article.source_domain if final_image_url else None
-                
-                return {
-                    "db_article": db_article,
-                    "text": text,
-                    "final_image_url": final_image_url,
-                    "final_image_source": final_image_source
-                }
+        db_articles_to_process = []
+        for a in db_articles:
+            db_articles_to_process.append({
+                "id": a.id,
+                "original_url": a.original_url,
+                "image_url": a.image_url,
+                "original_headline": a.original_headline,
+                "additional_sources": list(a.additional_sources) if a.additional_sources else [],
+                "source_domain": a.source_domain
+            })
 
-        tasks = [prepare_article(db_article) for db_article in db_articles_to_process]
-        prepared_articles = await asyncio.gather(*tasks)
+    import asyncio
+    semaphore = asyncio.Semaphore(10)
+    
+    url_to_rss_text = {a.url: a.text for a in clustered_articles}
+    
+    async def prepare_article(db_article_dict):
+        async with semaphore:
+            text = url_to_rss_text.get(db_article_dict["original_url"], "")
+            scraped_image = None
+            
+            if len(text) < 200 or not db_article_dict["image_url"]:
+                full_text, scraped_img = await fetch_article_text(db_article_dict["original_url"])
+                if full_text and len(full_text) > len(text):
+                    text = full_text
+                if scraped_img and not db_article_dict["image_url"]:
+                    scraped_image = scraped_img
+                    
+                if len(text) < 200:
+                    try:
+                        from ddgs import DDGS
+                        def perform_search():
+                            with DDGS() as ddgs:
+                                return list(ddgs.news(db_article_dict["original_headline"], max_results=3))
+                        results = await asyncio.to_thread(perform_search)
+                        if results:
+                            for r in results:
+                                if r.get('url') and r['url'] != db_article_dict["original_url"]:
+                                    search_url = r['url']
+                                    s_text, _ = await fetch_article_text(search_url)
+                                    if s_text and len(s_text) > 100:
+                                        text += f"\n\n--- Source: {r.get('source', search_url)} ---\n" + s_text
+                                        sources = db_article_dict["additional_sources"]
+                                        sources.append({
+                                            "url": search_url, 
+                                            "domain": r.get('source', search_url), 
+                                            "headline": r.get('title', db_article_dict["original_headline"])
+                                        })
+                                        db_article_dict["additional_sources"] = sources
+                    except Exception as e:
+                        from app.scraper.feed_reader import logger
+                        logger.warning(f"DDG Search failed for '{db_article_dict['original_headline']}': {e}")
+            
+            final_image_url = db_article_dict["image_url"] or scraped_image
+            final_image_source = db_article_dict["source_domain"] if final_image_url else None
+            
+            return {
+                "db_article_dict": db_article_dict,
+                "text": text,
+                "final_image_url": final_image_url,
+                "final_image_source": final_image_source
+            }
 
+    tasks = [prepare_article(db_article_dict) for db_article_dict in db_articles_to_process]
+    prepared_articles = await asyncio.gather(*tasks)
+
+    async with async_session() as db:
         # Step 5: Batch Summarize in chunks of 3
         batch_size = 3
         for i in range(0, len(prepared_articles), batch_size):
@@ -169,7 +181,7 @@ async def run_scrape_cycle():
             for idx, item in enumerate(chunk):
                 llm_input.append({
                     "id": idx,
-                    "headline": item["db_article"].original_headline,
+                    "headline": item["db_article_dict"]["original_headline"],
                     "text": item["text"][:1500]
                 })
                 
@@ -178,12 +190,18 @@ async def run_scrape_cycle():
             for idx, item in enumerate(chunk):
                 summary_res = summaries[idx] if idx < len(summaries) else None
                 if summary_res:
-                    db_article = item["db_article"]
+                    article_id = item["db_article_dict"]["id"]
+                    db_article = await db.scalar(select(Article).where(Article.id == article_id))
+                    if not db_article:
+                        continue
+                        
                     db_article.ai_summary = summary_res.ai_summary
                     db_article.market_impact = summary_res.market_impact
                     db_article.detailed_summary = summary_res.detailed_summary
                     db_article.category = summary_res.category
                     db_article.tags = summary_res.tags
+                    db_article.additional_sources = item["db_article_dict"]["additional_sources"]
+                    
                     if item["final_image_url"] and not db_article.image_url:
                         db_article.image_url = item["final_image_url"]
                         db_article.image_source = item["final_image_source"]

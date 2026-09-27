@@ -168,21 +168,10 @@ class Summarizer:
             client = AsyncOpenAI(api_key=self.settings.groq_api_key, base_url="https://api.groq.com/openai/v1")
             
             models = [
-                "llama-3.1-8b-instant",
-                "llama-3.3-70b-versatile",
-                "mixtral-8x7b-32768",
-                "qwen-2.5-32b",
-                "gemma2-9b-it",
-                "llama-3.2-3b-preview",
-                "llama-3.2-1b-preview",
-                "llama-3.2-11b-vision-preview",
+                "qwen/qwen3.8-27b",
                 "allam-2-7b",
-                "deepseek-r1-distill-llama-70b",
-                "llama3-70b-8192",
-                "llama3-8b-8192",
-                "canopylabs/orpheus-v1-english",
-                "llama-3.1-70b-versatile",
-                "qwen/qwen3.8-27b"
+                "openai/gpt-oss-120b",
+                "openai/gpt-oss-20b"
             ]
             last_err = None
             for model_name in models:
@@ -288,21 +277,10 @@ class Summarizer:
         )
         
         models_to_try = [
-            "llama-3.1-8b-instant",
-            "llama-3.3-70b-versatile",
-            "mixtral-8x7b-32768",
-            "qwen-2.5-32b",
-            "gemma2-9b-it",
-            "llama-3.2-3b-preview",
-            "llama-3.2-1b-preview",
-            "llama-3.2-11b-vision-preview",
+            "qwen/qwen3.8-27b",
             "allam-2-7b",
-            "deepseek-r1-distill-llama-70b",
-            "llama3-70b-8192",
-            "llama3-8b-8192",
-            "canopylabs/orpheus-v1-english",
-            "llama-3.1-70b-versatile",
-            "qwen/qwen3.8-27b"
+            "openai/gpt-oss-120b",
+            "openai/gpt-oss-20b"
         ]
 
         last_error = None
