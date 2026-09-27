@@ -78,8 +78,8 @@ async def run_scrape_cycle():
         cutoff = datetime.now(timezone.utc) - timedelta(days=3)
         await db.execute(delete(Article).where(Article.created_at < cutoff))
         
-        # Step 1.5: Keep only the 100 most recent unsummarized articles in DB to prevent endless cold starts
-        unsummarized_query = select(Article.id).where(Article.ai_summary.is_(None)).order_by(desc(Article.published_at)).offset(100)
+        # Step 1.5: Keep only the 54 most recent unsummarized articles in DB to prevent endless cold starts
+        unsummarized_query = select(Article.id).where(Article.ai_summary.is_(None)).order_by(desc(Article.published_at)).offset(54)
         excess_unsummarized = await db.execute(unsummarized_query)
         excess_ids = excess_unsummarized.scalars().all()
         if excess_ids:
@@ -90,9 +90,9 @@ async def run_scrape_cycle():
         import asyncio
         semaphore = asyncio.Semaphore(10)
         
-        # Limit processing strictly to the 100 most recent articles to reduce API load
+        # Limit processing strictly to the 54 most recent articles to reduce API load
         clustered_articles.sort(key=lambda x: x.published_at, reverse=True)
-        clustered_articles = clustered_articles[:100]
+        clustered_articles = clustered_articles[:54]
         
         async def prepare_article(article, existing_article=None):
             async with semaphore:
