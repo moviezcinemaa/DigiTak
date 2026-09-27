@@ -161,7 +161,12 @@ class Summarizer:
             models = [
                 "llama-3.1-8b-instant",
                 "llama-3.3-70b-versatile",
-                "mixtral-8x7b-32768"
+                "mixtral-8x7b-32768",
+                "gemma2-9b-it",
+                "llama-3.2-3b-preview",
+                "llama-3.2-1b-preview",
+                "deepseek-r1-distill-llama-70b",
+                "llama-3.2-11b-vision-preview"
             ]
             last_err = None
             for model_name in models:
@@ -201,7 +206,7 @@ class Summarizer:
             logger.warning("No LLM API keys configured. Skipping summarization.")
             return None
 
-        prompt = SUMMARIZATION_PROMPT.format(headline=headline, text=text[:4000])
+        prompt = SUMMARIZATION_PROMPT.format(headline=headline, text=text[:1500])
 
         for provider in self._providers:
             try:
@@ -263,7 +268,12 @@ class Summarizer:
         models_to_try = [
             "llama-3.1-8b-instant",
             "llama-3.3-70b-versatile",
-            "mixtral-8x7b-32768"
+            "mixtral-8x7b-32768",
+            "gemma2-9b-it",
+            "llama-3.2-3b-preview",
+            "llama-3.2-1b-preview",
+            "deepseek-r1-distill-llama-70b",
+            "llama-3.2-11b-vision-preview"
         ]
 
         last_error = None

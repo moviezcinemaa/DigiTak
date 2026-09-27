@@ -143,8 +143,8 @@ async def run_scrape_cycle():
                 
         prepared_articles = await asyncio.gather(*tasks)
 
-        # Step 4: Batch Summarize in chunks of 5
-        batch_size = 5
+        # Step 4: Batch Summarize in chunks of 3
+        batch_size = 3
         for i in range(0, len(prepared_articles), batch_size):
             chunk = prepared_articles[i:i+batch_size]
             
@@ -153,7 +153,7 @@ async def run_scrape_cycle():
                 llm_input.append({
                     "id": idx,
                     "headline": item["feed_article"].headline,
-                    "text": item["text"][:4000]
+                    "text": item["text"][:1500]
                 })
                 
             summaries = await summarizer.summarize_batch(llm_input)
@@ -197,7 +197,7 @@ async def run_scrape_cycle():
                 new_count += 1
                 
             await db.commit()
-            await asyncio.sleep(3) # Prevent API rate limit on free tiers (RPM limits)
+            await asyncio.sleep(8) # Prevent API rate limit on free tiers (RPM limits)
 
     logger.info(f"Scrape cycle complete: {new_count} new, {skip_count} skipped")
 
