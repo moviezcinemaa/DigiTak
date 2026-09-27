@@ -178,7 +178,9 @@ class Summarizer:
                 except Exception as e:
                     last_err = e
                     continue
-            raise last_err
+            if last_err:
+                raise last_err
+            raise Exception("No Groq models available or all failed without exception.")
             
         elif provider == "openrouter":
             from openai import AsyncOpenAI
@@ -196,7 +198,9 @@ class Summarizer:
                 except Exception as e:
                     last_err = e
                     continue
-            raise last_err
+            if last_err:
+                raise last_err
+            raise Exception("No OpenRouter models available or all failed without exception.")
         return None
 
     async def summarize(
@@ -254,7 +258,9 @@ class Summarizer:
                 continue
                 
         logger.error(f"All Gemini models failed. Last error: {last_error}")
-        raise last_error
+        if last_error:
+            raise last_error
+        raise Exception("All Gemini models failed.")
 
     async def _call_groq(self, prompt: str) -> Optional[SummarizationResult]:
         from openai import AsyncOpenAI
@@ -292,7 +298,9 @@ class Summarizer:
                 continue
                 
         logger.error(f"All Groq models failed. Last error: {last_error}")
-        raise last_error
+        if last_error:
+            raise last_error
+        raise Exception("All Groq models failed.")
 
     async def _call_openrouter(self, prompt: str) -> Optional[SummarizationResult]:
         from openai import AsyncOpenAI
@@ -330,7 +338,9 @@ class Summarizer:
                 continue
                 
         logger.error(f"All OpenRouter models failed. Last error: {last_error}")
-        raise last_error
+        if last_error:
+            raise last_error
+        raise Exception("All OpenRouter models failed.")
 
     def _parse_response(
         self, raw: str, provider: str
