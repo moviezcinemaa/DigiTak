@@ -243,13 +243,7 @@ a:hover {
 .category-chips {
   display: flex;
   gap: 8px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.category-chips::-webkit-scrollbar {
-  display: none;
+  flex-wrap: wrap;
 }
 
 .category-chip {
@@ -940,6 +934,10 @@ a:hover {
     grid-template-columns: 1fr;
   }
 
+  .news-list-item {
+    flex-direction: column;
+  }
+
   .related-section .news-grid {
     grid-template-columns: 1fr;
   }
@@ -1352,8 +1350,8 @@ a:hover {
 
 @media (max-width: 600px) {
   .movies-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .movie-poster,
