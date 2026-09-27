@@ -97,7 +97,7 @@ async def run_scrape_cycle():
                         
                     if len(text) < 200:
                         try:
-                            from duckduckgo_search import DDGS
+                            from ddgs import DDGS
                             def perform_search():
                                 with DDGS() as ddgs:
                                     return list(ddgs.news(article.headline, max_results=3))
@@ -115,8 +115,7 @@ async def run_scrape_cycle():
                                                 "headline": r.get('title', article.headline)
                                             })
                         except Exception as e:
-                            from app.scraper.feed_reader import logger
-                            logger.error(f"DDG Search failed for '{article.headline}': {e}")
+                            pass
                 
                 final_image_url = article.image_url or scraped_image
                 final_image_source = article.source_domain if final_image_url else None
