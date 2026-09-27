@@ -22,13 +22,23 @@ export default function MoviesFeed() {
     return (
       <section className="movies-feed">
         <h1 className="movies-feed-title">Movies</h1>
-        <div className="movies-grid">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="movie-card-skeleton">
-              <div className="movie-poster-skeleton" />
-              <div className="movie-title-skeleton" />
-            </div>
-          ))}
+        <div className="news-grid-dynamic">
+          {[1, 2, 3, 4].map((i) => {
+            const rowIdx = Math.floor((i - 1) / 3);
+            const itemsInThisRow = Math.min(3, 4 - rowIdx * 3);
+            let span = 2;
+            if (itemsInThisRow === 1) span = 6;
+            else if (itemsInThisRow === 2) span = 3;
+            
+            return (
+              <div key={i} className="news-grid-item-dynamic" style={{ '--dynamic-span': span } as any}>
+                <div className="movie-card-skeleton">
+                  <div className="movie-poster-skeleton" />
+                  <div className="movie-title-skeleton" />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
     );
@@ -46,25 +56,41 @@ export default function MoviesFeed() {
   return (
     <section className="movies-feed">
       <h1 className="movies-feed-title">Movies</h1>
-      <div className="movies-grid">
-        {movies.map((movie) => (
-          <Link
-            key={movie._id}
-            to={`/movies/${movie.slug.current}`}
-            className="movie-card"
-          >
-            {movie.poster ? (
-              <img
-                src={urlFor(movie.poster).width(400).height(560).url()}
-                alt={movie.title}
-                className="movie-poster"
-              />
-            ) : (
-              <div className="movie-poster-placeholder">{movie.title[0]}</div>
-            )}
-            <h2 className="movie-card-title">{movie.title}</h2>
-          </Link>
-        ))}
+      <div className="news-grid-dynamic">
+        {movies.map((movie, idx) => {
+          const rowIdx = Math.floor(idx / 3);
+          const itemsInThisRow = Math.min(3, movies.length - rowIdx * 3);
+          let span = 2; // defaults to 3 per row (6/3=2)
+          if (itemsInThisRow === 1) span = 6;
+          else if (itemsInThisRow === 2) span = 3;
+
+          return (
+            <div key={movie._id} className="news-grid-item-dynamic" style={{ '--dynamic-span': span } as any}>
+              <Link
+                to={`/movies/${movie.slug.current}`}
+                className="news-card"
+                style={{ textDecoration: 'none' }}
+              >
+                {movie.poster ? (
+                  <div className="news-card-image" style={{ backgroundColor: '#000' }}>
+                    <img
+                      src={urlFor(movie.poster).width(800).url()}
+                      alt={movie.title}
+                      style={{ objectFit: 'contain' }}
+                    />
+                  </div>
+                ) : (
+                  <div className="movie-poster-placeholder">{movie.title[0]}</div>
+                )}
+                <div className="news-card-body">
+                  <h2 className="news-card-headline" style={{ margin: 0 }}>
+                    {movie.title}
+                  </h2>
+                </div>
+              </Link>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
