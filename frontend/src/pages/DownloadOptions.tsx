@@ -52,12 +52,12 @@ export default function DownloadOptions() {
 
         {movie.poster ? (
           <img
-            src={urlFor(movie.poster).width(720).height(405).url()}
+            src={urlFor(movie.poster).width(720).url()}
             alt={movie.title}
             className="movie-entry-poster"
           />
         ) : (
-          <div className="movie-poster-placeholder" style={{ marginBottom: "24px", width: "100%", aspectRatio: "16/9" }}>
+          <div className="movie-poster-placeholder" style={{ marginBottom: "24px", width: "100%", aspectRatio: "2/3" }}>
             {movie.title[0]}
           </div>
         )}

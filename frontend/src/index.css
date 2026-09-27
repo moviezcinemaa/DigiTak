@@ -1011,14 +1011,14 @@ a:hover {
 
 .movie-poster {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 2 / 3;
   object-fit: cover;
   display: block;
 }
 
 .movie-poster-placeholder {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 2 / 3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1094,7 +1094,7 @@ a:hover {
 
 .movie-entry-poster {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 2 / 3;
   object-fit: cover;
   display: block;
   margin-bottom: 24px;
