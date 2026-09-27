@@ -166,7 +166,8 @@ class Summarizer:
                 "gemma2-9b-it",
                 "llama-3.2-3b-preview",
                 "llama-3.2-1b-preview",
-                "llama-3.2-11b-vision-preview"
+                "llama-3.2-11b-vision-preview",
+                "allam-2-7b"
             ]
             last_err = None
             for model_name in models:
@@ -279,7 +280,8 @@ class Summarizer:
             "gemma2-9b-it",
             "llama-3.2-3b-preview",
             "llama-3.2-1b-preview",
-            "llama-3.2-11b-vision-preview"
+            "llama-3.2-11b-vision-preview",
+            "allam-2-7b"
         ]
 
         last_error = None
