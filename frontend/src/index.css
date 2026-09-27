@@ -972,3 +972,405 @@ a:hover {
     text-align: center;
   }
 }
+
+/* ─── Phase 3: Movies Feed ─────────────────────────────────────── */
+
+.movies-feed {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.movies-feed-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.movie-card {
+  display: block;
+  text-decoration: none;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+.movie-card:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-dark);
+}
+
+.movie-poster {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-poster-placeholder {
+  width: 100%;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.movie-card-title {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 10px 12px;
+  line-height: 1.4;
+}
+
+.movies-empty {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+}
+
+.movie-card-skeleton {
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+}
+
+.movie-poster-skeleton {
+  width: 100%;
+  height: 280px;
+  background: var(--skeleton-from);
+}
+
+.movie-title-skeleton {
+  height: 16px;
+  margin: 12px;
+  background: var(--skeleton-from);
+  width: 60%;
+}
+
+/* ─── Phase 3: Movie Entry Page ────────────────────────────────── */
+
+.movie-entry {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.movie-back-link {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid transparent;
+}
+
+.movie-back-link:hover {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
+}
+
+.movie-entry-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.3;
+}
+
+.movie-entry-poster {
+  width: 100%;
+  max-width: 400px;
+  display: block;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+}
+
+.movie-entry-body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-primary);
+  margin-bottom: 32px;
+}
+
+.movie-entry-body p {
+  margin-bottom: 16px;
+}
+
+.movie-entry-body h2,
+.movie-entry-body h3 {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.movie-entry-body ul,
+.movie-entry-body ol {
+  margin-left: 20px;
+  margin-bottom: 16px;
+}
+
+.movie-entry-body blockquote {
+  border-left: 3px solid var(--border-dark);
+  padding-left: 16px;
+  margin: 16px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.movie-entry-cta {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+.movie-cta-link {
+  text-decoration: none;
+}
+
+.movie-cta-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+  border: 1px solid #1a1a1a;
+  border-radius: 0;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.movie-cta-box:hover {
+  background: #000000;
+}
+
+.movie-entry-skeleton {
+  max-width: 720px;
+}
+
+.movie-body-skeleton {
+  height: 200px;
+  background: var(--skeleton-from);
+  margin-top: 16px;
+}
+
+/* ─── Phase 3: Verification Funnel ─────────────────────────────── */
+
+.verify-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 48px 16px 120px;
+  min-height: 100vh;
+  position: relative;
+}
+
+.verify-loading {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  padding: 48px 0;
+  text-align: center;
+}
+
+.verify-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.verify-reactions {
+  margin-bottom: 32px;
+}
+
+.verify-reactions-heading {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.verify-reactions-text {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+}
+
+.verify-timer-section {
+  margin: 32px 0;
+  text-align: center;
+}
+
+.verify-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 1px solid #1a1a1a;
+  border-radius: 0;
+  background: #ffffff;
+  color: #1a1a1a;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: none;
+}
+
+.verify-btn:hover {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.verify-btn-active {
+  background: #1a1a1a;
+  color: #ffffff;
+  border-color: #1a1a1a;
+}
+
+.verify-btn-active:hover {
+  background: #000000;
+}
+
+.verify-btn-disabled {
+  border-color: var(--border-color);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  background: var(--bg-secondary);
+}
+
+.verify-btn-disabled:hover {
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+}
+
+.verify-countdown {
+  padding: 24px 0;
+}
+
+.verify-countdown-number {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.verify-spacer {
+  height: 60vh;
+}
+
+.verify-footer-action {
+  text-align: center;
+  padding: 24px 0;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ─── Phase 3: Download Options ────────────────────────────────── */
+
+.download-page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 48px 16px;
+  min-height: 100vh;
+}
+
+.download-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.download-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.download-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.download-btn {
+  display: block;
+  width: 100%;
+  padding: 16px 24px;
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #1a1a1a;
+  border-radius: 0;
+  background: #ffffff;
+  color: #1a1a1a;
+  cursor: pointer;
+  text-align: center;
+  transition: none;
+}
+
+.download-btn:hover {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+/* ─── Phase 3: Responsive ──────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .movies-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .movie-poster,
+  .movie-poster-placeholder {
+    height: 200px;
+  }
+
+  .movie-card-title {
+    font-size: 0.8125rem;
+    padding: 8px 10px;
+  }
+
+  .movie-entry-title {
+    font-size: 1.375rem;
+  }
+
+  .verify-countdown-number {
+    font-size: 2.5rem;
+  }
+}

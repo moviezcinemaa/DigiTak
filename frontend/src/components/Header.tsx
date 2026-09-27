@@ -22,6 +22,9 @@ export default function Header() {
           <NavLink to="/" end onClick={() => setNavOpen(false)}>
             Feed
           </NavLink>
+          <NavLink to="/movies" onClick={() => setNavOpen(false)}>
+            Movies
+          </NavLink>
           <NavLink to="/about" onClick={() => setNavOpen(false)}>
             About
           </NavLink>
