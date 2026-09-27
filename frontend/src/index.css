@@ -1120,8 +1120,7 @@ a:hover {
 
 .movie-poster {
   width: 100%;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
+  height: auto;
   display: block;
 }
 
@@ -1205,8 +1204,7 @@ a:hover {
   width: 100%;
   max-width: 280px;
   margin: 0 auto 24px auto;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
+  height: auto;
   display: block;
   border: 1px solid var(--border-color);
 }
