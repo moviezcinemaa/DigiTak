@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Category } from "../types";
 import { CATEGORIES } from "../types";
 
@@ -7,19 +8,30 @@ interface CategoryBarProps {
 }
 
 export default function CategoryBar({ active, onChange }: CategoryBarProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className="category-bar">
-      <div className="category-chips">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            className={`category-chip${active === cat ? " active" : ""}`}
-            onClick={() => onChange(cat)}
-          >
-            {cat}
-          </button>
-        ))}
+    <div className="category-bar-wrapper">
+      <div className={`category-bar ${isExpanded ? "expanded" : ""}`}>
+        <div className="category-chips">
+          {CATEGORIES.map((cat) => (
+             <button
+              key={cat}
+              className={`category-chip${active === cat ? " active" : ""}`}
+              onClick={() => onChange(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
+      <button 
+        className={`category-toggle-btn ${isExpanded ? "expanded" : ""}`}
+        onClick={() => setIsExpanded(!isExpanded)}
+        aria-label={isExpanded ? "Collapse categories" : "Expand categories"}
+      >
+        {isExpanded ? "−" : "＋"}
+      </button>
     </div>
   );
 }

@@ -124,14 +124,7 @@ export default function Home() {
         <>
           {/* Top section: Articles with images (Dynamic Grid) */}
           {withImage.length > 0 && (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(6, 1fr)",
-                gap: "20px",
-                marginBottom: "32px",
-              }}
-            >
+            <div className="news-grid-dynamic">
               {withImage.map((article, idx) => {
                 const rowIdx = Math.floor(idx / 3);
                 const itemsInThisRow = Math.min(3, withImage.length - rowIdx * 3);
@@ -140,7 +133,7 @@ export default function Home() {
                 else if (itemsInThisRow === 2) span = 3;
 
                 return (
-                  <div key={article.id} style={{ gridColumn: `span ${span}`, display: 'flex', flexDirection: 'column' }}>
+                  <div key={article.id} className="news-grid-item-dynamic" style={{ '--dynamic-span': span } as any}>
                     <ArticleCard article={article} />
                   </div>
                 );

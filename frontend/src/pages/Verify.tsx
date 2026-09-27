@@ -86,7 +86,7 @@ export default function Verify() {
 
           {isCounting && (
             <div className="verify-countdown">
-              <span className="verify-countdown-number">{countdown}</span>
+              <span key={countdown} className="verify-countdown-number">{countdown}</span>
             </div>
           )}
 
