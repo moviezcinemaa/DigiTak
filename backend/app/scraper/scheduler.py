@@ -90,9 +90,8 @@ async def run_scrape_cycle():
         import asyncio
         semaphore = asyncio.Semaphore(10)
         
-        # Limit processing strictly to the 54 most recent articles to reduce API load
+        # Sort by newest first, but process ALL articles found in the feed to backfill the database
         clustered_articles.sort(key=lambda x: x.published_at, reverse=True)
-        clustered_articles = clustered_articles[:54]
         
         async def prepare_article(article, existing_article=None):
             async with semaphore:
