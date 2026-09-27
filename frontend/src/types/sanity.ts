@@ -6,7 +6,7 @@ export interface MovieNews {
     asset: { _ref: string };
     hotspot?: { x: number; y: number };
   };
-  financialNews?: unknown[];
+  financialNews?: any[];
   youtubeReactions?: string;
   telegramLink: string;
 }
