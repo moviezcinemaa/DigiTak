@@ -9,9 +9,8 @@ export default function Verify() {
   const [loading, setLoading] = useState(true);
 
   const [isCounting, setIsCounting] = useState(false);
-  const [countdown, setCountdown] = useState(10);
   const [timerDone, setTimerDone] = useState(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -26,23 +25,15 @@ export default function Verify() {
 
   const startTimer = useCallback(() => {
     setIsCounting(true);
-    setCountdown(10);
-    intervalRef.current = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          if (intervalRef.current) clearInterval(intervalRef.current);
-          setIsCounting(false);
-          setTimerDone(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    timeoutRef.current = setTimeout(() => {
+      setIsCounting(false);
+      setTimerDone(true);
+    }, 10000);
   }, []);
 
   useEffect(() => {
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
 
@@ -86,7 +77,9 @@ export default function Verify() {
 
           {isCounting && (
             <div className="verify-countdown">
-              <span key={countdown} className="verify-countdown-number">{countdown}</span>
+              <div className="numero_counting_wrapper">
+                <div className="numero_shape"></div>
+              </div>
             </div>
           )}
 
