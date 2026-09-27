@@ -158,7 +158,15 @@ class Summarizer:
             from openai import AsyncOpenAI
             client = AsyncOpenAI(api_key=self.settings.groq_api_key, base_url="https://api.groq.com/openai/v1")
             
-            models = ["llama-3.1-8b-instant", "llama-3.1-70b-versatile", "mixtral-8x7b-32768", "llama-3.2-1b-preview", "llama-3.2-3b-preview", "llama-3.3-70b-versatile"]
+            models = [
+                "llama-3.1-8b-instant",
+                "llama-3.1-70b-versatile",
+                "llama-3.3-70b-versatile",
+                "mixtral-8x7b-32768",
+                "gemma2-9b-it",
+                "llama-3.2-3b-preview",
+                "llama-3.2-1b-preview"
+            ]
             last_err = None
             for model_name in models:
                 try:
@@ -259,7 +267,11 @@ class Summarizer:
         models_to_try = [
             "llama-3.1-8b-instant",
             "llama-3.1-70b-versatile",
-            "mixtral-8x7b-32768"
+            "llama-3.3-70b-versatile",
+            "mixtral-8x7b-32768",
+            "gemma2-9b-it",
+            "llama-3.2-3b-preview",
+            "llama-3.2-1b-preview"
         ]
 
         last_error = None
