@@ -174,14 +174,7 @@ export default function ArticlePage() {
           
           {/* Images */}
           {related.filter(r => r.image_url).length > 0 && (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(6, 1fr)",
-                gap: "20px",
-                marginBottom: "32px",
-              }}
-            >
+            <div className="news-grid-dynamic" style={{ marginBottom: "32px" }}>
               {related.filter(r => r.image_url).map((r, idx, arr) => {
                 const rowIdx = Math.floor(idx / 3);
                 const itemsInThisRow = Math.min(3, arr.length - rowIdx * 3);
@@ -190,7 +183,7 @@ export default function ArticlePage() {
                 else if (itemsInThisRow === 2) span = 3;
 
                 return (
-                  <div key={r.id} style={{ gridColumn: `span ${span}`, display: 'flex', flexDirection: 'column' }}>
+                  <div key={r.id} className="news-grid-item-dynamic" style={{ '--dynamic-span': span } as any}>
                     <ArticleCard article={r} />
                   </div>
                 );

@@ -1471,6 +1471,14 @@ a:hover {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
+  .movies-grid:has(> :last-child:nth-child(1)) {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .movies-grid:has(> :last-child:nth-child(1)) .movie-card {
+    max-width: 280px;
+    width: 100%;
+  }
 
   .movie-poster,
   .movie-poster-placeholder {
