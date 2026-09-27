@@ -167,7 +167,10 @@ class Summarizer:
                 "llama-3.2-3b-preview",
                 "llama-3.2-1b-preview",
                 "llama-3.2-11b-vision-preview",
-                "allam-2-7b"
+                "allam-2-7b",
+                "deepseek-r1-distill-llama-70b",
+                "llama3-70b-8192",
+                "llama3-8b-8192"
             ]
             last_err = None
             for model_name in models:
@@ -281,7 +284,10 @@ class Summarizer:
             "llama-3.2-3b-preview",
             "llama-3.2-1b-preview",
             "llama-3.2-11b-vision-preview",
-            "allam-2-7b"
+            "allam-2-7b",
+            "deepseek-r1-distill-llama-70b",
+            "llama3-70b-8192",
+            "llama3-8b-8192"
         ]
 
         last_error = None
