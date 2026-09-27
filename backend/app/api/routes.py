@@ -21,6 +21,7 @@ settings = get_settings()
 
 
 @router.get("/health", response_model=HealthResponse)
+@router.head("/health")
 async def health_check():
     return HealthResponse(
         status="ok",

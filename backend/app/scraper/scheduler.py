@@ -54,12 +54,28 @@ async def run_scrape_cycle():
 
     # Phase 3: Cluster similar articles
     import difflib
+    import re
+    
+    def calculate_similarity(h1, h2):
+        # 1. Standard difflib
+        ratio = difflib.SequenceMatcher(None, h1.lower(), h2.lower()).ratio()
+        if ratio > 0.6:
+            return True
+            
+        # 2. Word overlap (Jaccard-like) for rearranged headlines
+        w1 = set(re.findall(r'\w{3,}', h1.lower()))
+        w2 = set(re.findall(r'\w{3,}', h2.lower()))
+        if not w1 or not w2:
+            return False
+        overlap = len(w1 & w2)
+        jaccard = overlap / (len(w1 | w2))
+        return jaccard > 0.35
+
     clustered_articles = []
     for article in feed_articles:
         found_cluster = False
         for cluster in clustered_articles:
-            # 60% similarity in headline groups them
-            if difflib.SequenceMatcher(None, article.headline.lower(), cluster.headline.lower()).ratio() > 0.6:
+            if calculate_similarity(article.headline, cluster.headline):
                 cluster.additional_sources.append({"url": article.url, "domain": article.source_domain, "headline": article.headline})
                 # Append text to give LLM more context
                 cluster.text += f"\n\n--- Source: {article.source_domain} ---\n" + article.text
