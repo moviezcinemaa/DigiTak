@@ -27,6 +27,26 @@ async def lifespan(app: FastAPI):
     # NOTE: APScheduler handles background scraping. 
     # Deduplication logic in scheduler.py prevents overlap automatically!
     
+    async def cleanup_duplicates():
+        from app.database import async_session
+        from app.models import Article
+        from sqlalchemy import select, delete
+        import asyncio
+        await asyncio.sleep(5)
+        try:
+            async with async_session() as db:
+                query = select(Article).where(Article.original_headline == "Anthropic CEO Amodei set to meet with Trump after missing state dinner")
+                res = await db.execute(query)
+                for article in res.scalars().all():
+                    await db.execute(delete(Article).where(Article.id == article.id))
+                await db.commit()
+                logger.info("Startup cleanup: removed duplicate article")
+        except Exception as e:
+            pass
+
+    import asyncio
+    asyncio.create_task(cleanup_duplicates())
+
     FastAPICache.init(InMemoryBackend(), prefix="gofact-cache")
 
     start_scheduler()
