@@ -29,7 +29,7 @@ export default function CategoryBar({ active, onChange }: CategoryBarProps) {
                 className={`category-chip${active === cat ? " active" : ""}`}
                 onClick={() => {
                   onChange(cat);
-                  // Optionally close on select if preferred
+                  setIsOpen(false);
                 }}
               >
                 {cat}
