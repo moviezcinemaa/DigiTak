@@ -4,15 +4,15 @@ services:
     image: postgres:16-alpine
     platform: linux/arm64/v8
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-digitak}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-digitak_local}
-      POSTGRES_DB: ${POSTGRES_DB:-digitak}
+      POSTGRES_USER: ${POSTGRES_USER:-gofact}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gofact_local}
+      POSTGRES_DB: ${POSTGRES_DB:-gofact}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U digitak"]
+      test: ["CMD-SHELL", "pg_isready -U gofact"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -26,8 +26,8 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgresql+asyncpg://digitak:digitak_local@db:5432/digitak
-      DATABASE_URL_SYNC: postgresql+psycopg://digitak:digitak_local@db:5432/digitak
+      DATABASE_URL: postgresql+asyncpg://gofact:gofact_local@db:5432/gofact
+      DATABASE_URL_SYNC: postgresql+psycopg://gofact:gofact_local@db:5432/gofact
     depends_on:
       db:
         condition: service_healthy

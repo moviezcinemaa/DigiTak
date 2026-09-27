@@ -22,21 +22,21 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
-    logger.info(f"DigiTak API starting ({settings.environment})")
+    logger.info(f"GoFact API starting ({settings.environment})")
     
     # NOTE: APScheduler handles background scraping. 
     # Deduplication logic in scheduler.py prevents overlap automatically!
     
-    FastAPICache.init(InMemoryBackend(), prefix="digitak-cache")
+    FastAPICache.init(InMemoryBackend(), prefix="gofact-cache")
 
     start_scheduler()
     yield
     stop_scheduler()
-    logger.info("DigiTak API shutting down")
+    logger.info("GoFact API shutting down")
 
 
 app = FastAPI(
-    title="DigiTak API",
+    title="GoFact API",
     description="Financial news aggregation and AI summarization API",
     version="1.0.0",
     lifespan=lifespan,
@@ -61,4 +61,4 @@ app.include_router(router, prefix="/api")
 
 @app.get("/")
 async def root():
-    return {"message": "DigiTak API is running. Access /api/health for status."}
+    return {"message": "GoFact API is running. Access /api/health for status."}

@@ -208,7 +208,7 @@ class Summarizer:
                 try:
                     response = await client.chat.completions.create(
                         model=model_name, messages=[{"role": "user", "content": prompt}], max_tokens=2000,
-                        extra_headers={"HTTP-Referer": self.settings.frontend_url, "X-Title": "DigiTak"}
+                        extra_headers={"HTTP-Referer": self.settings.frontend_url, "X-Title": "GoFact"}
                     )
                     return extract_and_parse_json(response.choices[0].message.content)
                 except Exception as e:
@@ -351,7 +351,7 @@ class Summarizer:
                     max_tokens=1000,
                     extra_headers={
                         "HTTP-Referer": self.settings.frontend_url,
-                        "X-Title": "DigiTak",
+                        "X-Title": "GoFact",
                     }
                 )
                 return self._parse_response(response.choices[0].message.content, f"openrouter-{model}")

@@ -6,8 +6,8 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = "postgresql+asyncpg://digitak:digitak_local@localhost:5432/digitak"
-    database_url_sync: str = "postgresql://digitak:digitak_local@localhost:5432/digitak"
+    database_url: str = "postgresql+asyncpg://gofact:gofact_local@localhost:5432/gofact"
+    database_url_sync: str = "postgresql://gofact:gofact_local@localhost:5432/gofact"
 
     # LLM API keys (all optional; the summarizer rotates through whichever are set)
     gemini_api_key: str = ""

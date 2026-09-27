@@ -10,7 +10,7 @@ export default function TermsOfService() {
       <div className="static-doc-content">
         <h2>1. Nature of Service</h2>
         <p>
-          DigiTak is a news aggregation and summarization service. We collect
+          GoFact is a news aggregation and summarization service. We collect
           publicly available financial news articles via RSS feeds and generate
           AI-powered summaries for informational purposes. All original
           content belongs to its respective publishers. We provide links to
@@ -29,7 +29,7 @@ export default function TermsOfService() {
 
         <h2>3. Fair Use and Attribution</h2>
         <p>
-          DigiTak operates under fair use principles. We summarize and
+          GoFact operates under fair use principles. We summarize and
           transform news content rather than reproducing it in full. Every
           summary includes a direct link to the original article and credits
           the source publication. If you are a content publisher and have
@@ -40,14 +40,14 @@ export default function TermsOfService() {
         <p>
           Summaries and market impact analyses are produced by automated
           systems using large language models. While we strive for accuracy,
-          AI outputs can be incorrect, misleading, or incomplete. DigiTak
+          AI outputs can be incorrect, misleading, or incomplete. GoFact
           makes no warranty regarding the accuracy or completeness of any
           AI-generated content.
         </p>
 
         <h2>5. Limitation of Liability</h2>
         <p>
-          DigiTak and its operators shall not be held liable for any losses,
+          GoFact and its operators shall not be held liable for any losses,
           damages, or costs arising from the use of information presented on
           this website, including but not limited to financial losses from
           trading or investment decisions influenced by content on this site.
@@ -60,7 +60,7 @@ export default function TermsOfService() {
         <ul>
           <li>Scrape or systematically download content for redistribution</li>
           <li>Overload our servers with automated requests</li>
-          <li>Misrepresent DigiTak summaries as original reporting</li>
+          <li>Misrepresent GoFact summaries as original reporting</li>
           <li>Use the service for any unlawful purpose</li>
         </ul>
 

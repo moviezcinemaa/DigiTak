@@ -116,7 +116,7 @@ async def fetch_article_text(url: str) -> tuple[str, Optional[str]]:
         async with httpx.AsyncClient(
             timeout=15.0,
             follow_redirects=True,
-            headers={"User-Agent": "DigiTak/2.0 (Financial News Aggregator)"},
+            headers={"User-Agent": "GoFact/2.0 (Financial News Aggregator)"},
         ) as client:
             response = await client.get(url)
             response.raise_for_status()

@@ -5,9 +5,9 @@ import {schemaTypes} from './schemas'
 
 export default defineConfig({
   name: 'default',
-  title: 'DigiTak Studio',
+  title: 'GoFact Studio',
 
-  projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'YOUR_PROJECT_ID',
+  projectId: process.env.SANITY_STUDIO_PROJECT_ID || '6rq4jwl0',
   dataset: process.env.SANITY_STUDIO_DATASET || 'production',
 
   plugins: [structureTool(), visionTool()],
@@ -19,7 +19,7 @@ export default defineConfig({
   cors: {
     allowOrigins: [
       'http://localhost:5173',
-      'https://digitak-frontend.onrender.com',
+      'https://gofact-frontend.onrender.com',
     ],
     allowCredentials: true,
   },

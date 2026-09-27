@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: digitak-backend
+    name: gofact-backend
     env: python
     plan: free
     buildCommand: "cd backend && pip install -r requirements.txt"
@@ -10,16 +10,16 @@ services:
         value: 3.12.0
       - key: DATABASE_URL
         fromDatabase:
-          name: digitak-db
+          name: gofact-db
           property: connectionString
       - key: DATABASE_URL_SYNC
         fromDatabase:
-          name: digitak-db
+          name: gofact-db
           property: connectionString
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL
-        value: "https://digitak-frontend.onrender.com"
+        value: "https://gofact-frontend.onrender.com"
       - key: GEMINI_API_KEY
         sync: false
       - key: GROQ_API_KEY
@@ -28,7 +28,7 @@ services:
         sync: false
 
   - type: web
-    name: digitak-frontend
+    name: gofact-frontend
     env: static
     buildCommand: "cd frontend && npm install && npm run build"
     staticPublishPath: "./frontend/dist"
@@ -36,7 +36,7 @@ services:
       - key: VITE_API_URL
         fromService:
           type: web
-          name: digitak-backend
+          name: gofact-backend
           envVarKey: RENDER_EXTERNAL_URL
     routes:
       - type: rewrite
@@ -44,7 +44,7 @@ services:
         destination: /index.html
 
 databases:
-  - name: digitak-db
-    databaseName: digitak
-    user: digitak
+  - name: gofact-db
+    databaseName: gofact
+    user: gofact
     plan: free

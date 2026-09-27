@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
       <div className="static-doc-content">
         <h2>Information We Collect</h2>
         <p>
-          DigiTak collects minimal data to operate this service. We do not
+          GoFact collects minimal data to operate this service. We do not
           require user accounts, and we do not collect personally identifiable
           information unless you voluntarily provide it through our contact
           form.

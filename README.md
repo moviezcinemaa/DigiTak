@@ -1,12 +1,12 @@
-# DigiTak 📈
+# GoFact 📈
 
-DigiTak is an intelligent, highly-concurrent automated financial news aggregator. It continuously scrapes, deduplicates, curates, and summarizes top financial stories, IPO news, and crypto updates from around the globe using a resilient multi-provider LLM fallback chain.
+GoFact is an intelligent, highly-concurrent automated financial news aggregator. It continuously scrapes, deduplicates, curates, and summarizes top financial stories, IPO news, and crypto updates from around the globe using a resilient multi-provider LLM fallback chain.
 
 ---
 
 ## 🏗️ Architectural Overview
 
-DigiTak is built for extreme speed and API-limit resilience. It splits the workload between a lightning-fast asynchronous REST API and a heavy-duty background scraper engine.
+GoFact is built for extreme speed and API-limit resilience. It splits the workload between a lightning-fast asynchronous REST API and a heavy-duty background scraper engine.
 
 - **Backend Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python) running on Uvicorn for asynchronous request handling.
 - **Database Engine**: PostgreSQL utilizing `asyncpg` and SQLAlchemy ORM. Optimized with specific B-Tree indexes (`published_at`, `category`, `created_at`).
@@ -63,7 +63,7 @@ graph TD
 ## 📂 Codebase Structure
 
 ```text
-DigiTak/
+GoFact/
 ├── backend/
 │   ├── app/
 │   │   ├── api/
@@ -98,7 +98,7 @@ DigiTak/
 
 ## 🚀 Deployment (Production Ready)
 
-DigiTak is fully configured for zero-downtime production deployment.
+GoFact is fully configured for zero-downtime production deployment.
 
 ### Option 1: 1-Click Render.com Deployment
 

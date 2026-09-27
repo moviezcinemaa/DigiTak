@@ -34,7 +34,7 @@ export default function Contact() {
         <p>
           Have a question, content removal request, or general inquiry? Send
           us a message below or email{" "}
-          <a href="mailto:hello@digitak.com">hello@digitak.com</a>.
+          <a href="mailto:hello@gofact.in">hello@gofact.in</a>.
         </p>
 
         <form className="contact-form" onSubmit={handleSubmit}>
