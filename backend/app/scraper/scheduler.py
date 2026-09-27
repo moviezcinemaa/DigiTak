@@ -135,11 +135,11 @@ async def run_scrape_cycle():
                     
                 if len(text) < 200:
                     try:
-                        from ddgs import DDGS
+                        from duckduckgo_search import DDGS
                         def perform_search():
                             with DDGS() as ddgs:
                                 return list(ddgs.news(db_article_dict["original_headline"], max_results=3))
-                        results = await asyncio.to_thread(perform_search)
+                        results = await asyncio.wait_for(asyncio.to_thread(perform_search), timeout=8.0)
                         if results:
                             for r in results:
                                 if r.get('url') and r['url'] != db_article_dict["original_url"]:

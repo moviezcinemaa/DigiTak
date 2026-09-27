@@ -97,6 +97,7 @@ class Summarizer:
             return []
             
         if not self._providers:
+            logger.warning("No LLM API keys configured! Check GROQ_API_KEY environment variable. Skipping summarization.")
             return [None] * len(articles)
             
         # Serialize the articles list to JSON string for the prompt
