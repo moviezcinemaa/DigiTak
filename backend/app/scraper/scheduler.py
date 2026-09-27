@@ -197,6 +197,7 @@ async def run_scrape_cycle():
                 new_count += 1
                 
             await db.commit()
+            await asyncio.sleep(3) # Prevent API rate limit on free tiers (RPM limits)
 
     logger.info(f"Scrape cycle complete: {new_count} new, {skip_count} skipped")
 

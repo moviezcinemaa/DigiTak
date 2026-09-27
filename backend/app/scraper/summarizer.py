@@ -158,7 +158,7 @@ class Summarizer:
             from openai import AsyncOpenAI
             client = AsyncOpenAI(api_key=self.settings.groq_api_key, base_url="https://api.groq.com/openai/v1")
             response = await client.chat.completions.create(
-                model="llama3-8b-8192", messages=[{"role": "user", "content": prompt}], max_tokens=2000
+                model="llama-3.1-8b-instant", messages=[{"role": "user", "content": prompt}], max_tokens=2000
             )
             return response.choices[0].message.content
         elif provider == "openrouter":
