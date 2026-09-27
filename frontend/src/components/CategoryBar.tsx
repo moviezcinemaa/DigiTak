@@ -1,4 +1,3 @@
-import { useState, useRef, useEffect } from "react";
 import type { Category } from "../types";
 import { CATEGORIES } from "../types";
 
