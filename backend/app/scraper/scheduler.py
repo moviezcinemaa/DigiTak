@@ -73,14 +73,26 @@ async def run_scrape_cycle():
 
     async with async_session() as db:
         # Step 1: Cleanup old articles (older than 3 days)
-        from sqlalchemy import delete
+        from sqlalchemy import delete, desc
         from datetime import timedelta
         cutoff = datetime.now(timezone.utc) - timedelta(days=3)
         await db.execute(delete(Article).where(Article.created_at < cutoff))
+        
+        # Step 1.5: Keep only the 100 most recent unsummarized articles in DB to prevent endless cold starts
+        unsummarized_query = select(Article.id).where(Article.ai_summary.is_(None)).order_by(desc(Article.published_at)).offset(100)
+        excess_unsummarized = await db.execute(unsummarized_query)
+        excess_ids = excess_unsummarized.scalars().all()
+        if excess_ids:
+            await db.execute(delete(Article).where(Article.id.in_(excess_ids)))
+        
         await db.commit()
 
         import asyncio
         semaphore = asyncio.Semaphore(10)
+        
+        # Limit processing strictly to the 100 most recent articles to reduce API load
+        clustered_articles.sort(key=lambda x: x.published_at, reverse=True)
+        clustered_articles = clustered_articles[:100]
         
         async def prepare_article(article, existing_article=None):
             async with semaphore:
