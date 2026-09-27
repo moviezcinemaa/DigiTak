@@ -1292,9 +1292,14 @@ a:hover {
   animation: pulse-timer 1s ease-in-out infinite;
 }
 
+.verify-spacer {
+  height: 60vh;
+}
+
 .verify-footer-action {
   text-align: center;
   padding: 24px 0;
+  border-top: 1px solid var(--border-color);
 }
 
 /* ─── Phase 3: Download Options ────────────────────────────────── */

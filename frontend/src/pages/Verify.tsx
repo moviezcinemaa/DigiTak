@@ -46,6 +46,9 @@ export default function Verify() {
     };
   }, []);
 
+  const handleSwipeDown = () => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  };
 
   if (loading) {
     return (
@@ -86,6 +89,16 @@ export default function Verify() {
               <span className="verify-countdown-number">{countdown}</span>
             </div>
           )}
+
+          {timerDone && (
+            <button
+              type="button"
+              className="verify-btn"
+              onClick={handleSwipeDown}
+            >
+              Swipe Down
+            </button>
+          )}
         </div>
 
         <img 
@@ -101,7 +114,9 @@ export default function Verify() {
           </div>
         )}
 
-        <div className="verify-footer-action" style={{ borderTop: "none", paddingTop: "0" }}>
+        <div className="verify-spacer" />
+
+        <div className="verify-footer-action">
           {timerDone ? (
             <Link
               to={`/download-options/${movie.slug.current}`}
