@@ -1094,7 +1094,8 @@ a:hover {
 
 .movie-entry-poster {
   width: 100%;
-  max-width: 400px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
   display: block;
   margin-bottom: 24px;
   border: 1px solid var(--border-color);
@@ -1176,7 +1177,7 @@ a:hover {
 /* ─── Phase 3: Verification Funnel ─────────────────────────────── */
 
 .verify-page {
-  max-width: 600px;
+  max-width: 720px;
   margin: 0 auto;
   padding: 48px 16px 120px;
   min-height: 100vh;
@@ -1275,28 +1276,31 @@ a:hover {
   padding: 24px 0;
 }
 
+@keyframes pulse-timer {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); color: var(--accent); }
+  100% { transform: scale(1); }
+}
+
 .verify-countdown-number {
   font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
   font-size: 3rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: 0.02em;
-}
-
-.verify-spacer {
-  height: 60vh;
+  display: inline-block;
+  animation: pulse-timer 1s ease-in-out infinite;
 }
 
 .verify-footer-action {
   text-align: center;
   padding: 24px 0;
-  border-top: 1px solid var(--border-color);
 }
 
 /* ─── Phase 3: Download Options ────────────────────────────────── */
 
 .download-page {
-  max-width: 480px;
+  max-width: 720px;
   margin: 0 auto;
   padding: 48px 16px;
   min-height: 100vh;

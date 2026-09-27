@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { sanityClient } from "../lib/sanity";
+import { sanityClient, urlFor } from "../lib/sanity";
 import type { MovieNews } from "../types/sanity";
 
 export default function DownloadOptions() {
@@ -11,7 +11,7 @@ export default function DownloadOptions() {
   useEffect(() => {
     if (!slug) return;
     const query = `*[_type == "movieNews" && slug.current == $slug][0]{
-      _id, title, slug, telegramLink
+      _id, title, slug, poster, telegramLink
     }`;
     sanityClient.fetch(query, { slug }).then((data: MovieNews | null) => {
       setMovie(data);
@@ -49,6 +49,18 @@ export default function DownloadOptions() {
       <section className="download-page">
         <h1 className="download-title">{movie.title}</h1>
         <p className="download-subtitle">Select your preferred quality</p>
+
+        {movie.poster ? (
+          <img
+            src={urlFor(movie.poster).width(720).height(405).url()}
+            alt={movie.title}
+            className="movie-entry-poster"
+          />
+        ) : (
+          <div className="movie-poster-placeholder" style={{ marginBottom: "24px", width: "100%", aspectRatio: "16/9" }}>
+            {movie.title[0]}
+          </div>
+        )}
 
         <div className="download-buttons">
           <button

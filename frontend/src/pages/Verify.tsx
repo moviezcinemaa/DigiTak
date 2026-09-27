@@ -9,7 +9,7 @@ export default function Verify() {
   const [loading, setLoading] = useState(true);
 
   const [isCounting, setIsCounting] = useState(false);
-  const [countdown, setCountdown] = useState(15);
+  const [countdown, setCountdown] = useState(10);
   const [timerDone, setTimerDone] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -26,7 +26,7 @@ export default function Verify() {
 
   const startTimer = useCallback(() => {
     setIsCounting(true);
-    setCountdown(15);
+    setCountdown(10);
     intervalRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -46,9 +46,6 @@ export default function Verify() {
     };
   }, []);
 
-  const handleSwipeDown = () => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-  };
 
   if (loading) {
     return (
@@ -73,14 +70,6 @@ export default function Verify() {
       <meta name="robots" content="noindex, nofollow" />
       <section className="verify-page">
         <h1 className="verify-title">{movie.title}</h1>
-
-        {movie.youtubeReactions && (
-          <div className="verify-reactions">
-            <h2 className="verify-reactions-heading">Reactions</h2>
-            <p className="verify-reactions-text">{movie.youtubeReactions}</p>
-          </div>
-        )}
-
         <div className="verify-timer-section">
           {!isCounting && !timerDone && (
             <button
@@ -97,25 +86,27 @@ export default function Verify() {
               <span className="verify-countdown-number">{countdown}</span>
             </div>
           )}
-
-          {timerDone && (
-            <button
-              type="button"
-              className="verify-btn"
-              onClick={handleSwipeDown}
-            >
-              Swipe Down
-            </button>
-          )}
         </div>
 
-        <div className="verify-spacer" />
+        <img 
+          src="/yt-reactions-placeholder.jpg" 
+          alt="Reactions placeholder" 
+          style={{ width: "100%", aspectRatio: "16/9", objectFit: "cover", marginBottom: "24px", border: "1px solid var(--border-color)" }} 
+        />
 
-        <div className="verify-footer-action">
+        {movie.youtubeReactions && (
+          <div className="verify-reactions">
+            <h2 className="verify-reactions-heading">Reactions</h2>
+            <p className="verify-reactions-text">{movie.youtubeReactions}</p>
+          </div>
+        )}
+
+        <div className="verify-footer-action" style={{ borderTop: "none", paddingTop: "0" }}>
           {timerDone ? (
             <Link
               to={`/download-options/${movie.slug.current}`}
               className="verify-btn verify-btn-active"
+              style={{ width: "100%" }}
             >
               Get Link
             </Link>
@@ -124,8 +115,9 @@ export default function Verify() {
               type="button"
               className="verify-btn verify-btn-disabled"
               disabled
+              style={{ width: "100%" }}
             >
-              Get Link
+              Wait to Get Link...
             </button>
           )}
         </div>
