@@ -115,7 +115,8 @@ async def run_scrape_cycle():
                                                 "headline": r.get('title', article.headline)
                                             })
                         except Exception as e:
-                            pass
+                            from app.scraper.feed_reader import logger
+                            logger.warning(f"DDG Search failed for '{article.headline}': {e}")
                 
                 final_image_url = article.image_url or scraped_image
                 final_image_source = article.source_domain if final_image_url else None
