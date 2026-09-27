@@ -234,19 +234,58 @@ a:hover {
 
 /* ─── Category Bar ──────────────────────────────────────────── */
 
-.category-bar-wrapper {
-  position: relative;
+.category-accordion-wrapper {
+  width: 100%;
   margin-bottom: 24px;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 16px;
 }
 
-.category-bar {
+.category-accordion-toggle {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  background: var(--bg-card); /* slightly off-white if applicable */
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: none;
+}
+
+.category-accordion-toggle:hover {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.toggle-icon {
+  display: inline-block;
+  transition: transform 300ms ease-in-out;
+}
+
+.toggle-icon.open {
+  transform: rotate(180deg);
+}
+
+.category-accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms ease-in-out;
+}
+
+.category-accordion-content.open {
+  grid-template-rows: 1fr;
+}
+
+.category-accordion-inner {
+  overflow: hidden;
 }
 
 .category-chips {
+  padding-top: 12px;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -925,13 +964,28 @@ a:hover {
     gap: 8px;
   }
 
+  .site-header {
+    position: relative;
+    z-index: 50;
+  }
+
   .site-nav {
-    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
     width: 100%;
+    display: flex;
     flex-direction: column;
     gap: 0;
-    border-top: 1px solid var(--border-color);
-    padding-top: 8px;
+    background: var(--bg-primary);
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 300ms ease-in-out, opacity 300ms ease-in-out;
+    border-bottom: none;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
 
   .news-grid-dynamic {
@@ -940,29 +994,17 @@ a:hover {
   .news-grid-item-dynamic {
     grid-column: span 1 !important;
   }
-  
-  .category-bar-wrapper {
-    position: relative;
-    z-index: 100;
-  }
-  .category-bar {
-    display: flex;
-    align-items: center;
-  }
-  .category-chips {
-    flex-wrap: wrap;
-  }
-  .mobile-hidden-chip {
-    display: none !important;
-  }
 
   .site-nav.open {
-    display: flex;
+    max-height: 400px;
+    opacity: 1;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .site-nav a {
-    padding: 8px 0;
+    padding: 16px;
     border-bottom: 1px solid var(--border-color);
+    background: var(--bg-primary);
   }
 
   .nav-toggle {
