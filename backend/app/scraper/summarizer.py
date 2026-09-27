@@ -149,7 +149,7 @@ class Summarizer:
         if provider == "gemini":
             import google.generativeai as genai
             genai.configure(api_key=self.settings.gemini_api_key)
-            models = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash"]
+            models = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash"]
             last_err = None
             for model_name in models:
                 try:
@@ -259,8 +259,7 @@ class Summarizer:
             "gemini-3.8-flash",
             "gemini-3.7-flash",
             "gemini-3.6-flash",
-            "gemini-3.5-flash",
-            "gemini-2.5-flash"
+            "gemini-3.5-flash"
         ]
         
         last_error = None
