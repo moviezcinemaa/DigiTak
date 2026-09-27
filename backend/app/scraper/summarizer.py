@@ -7,7 +7,7 @@ Supported providers (in priority order):
 
 Phase 2: Upgraded prompt enforces a structured JSON response with:
 - detailed_summary (200-250 words)
-- category (one of 6 fixed categories)
+- category (one of 9 fixed categories)
 - tags (up to 5 stock tickers/company names)
 """
 
@@ -19,7 +19,7 @@ from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-VALID_CATEGORIES = ["IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities"]
+VALID_CATEGORIES = ["IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities", "Finance", "Companies", "Indian Market"]
 
 SUMMARIZATION_PROMPT = """You are a senior financial news analyst writing for a professional financial news aggregation platform.
 
@@ -27,11 +27,11 @@ Given the following article headline and text, produce a JSON response with exac
 
 1. "detailed_summary": A highly detailed, professional financial summary. CRITICAL RULE: It MUST be exactly 3 robust paragraphs and strictly between 200 and 250 words. Write in a formal journalistic tone. Include relevant context about why this news matters, what led to it, and what it means for investors. Break complex topics into digestible insights. Do NOT use bullet points — write flowing paragraphs. Do NOT hallucinate or extrapolate from your pre-training knowledge. You will be provided with aggregated text from multiple news sources about this topic; synthesize all provided source text into a cohesive report.
 
-2. "category": Classify the article into EXACTLY ONE primary category from this list: "IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities". Choose the most dominant topic. 
+2. "category": Classify the article into EXACTLY ONE primary category from this list: "IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities", "Finance", "Companies", "Indian Market". Choose the most dominant topic. 
 
 3. "tags": An array of up to 7 items. This MUST include:
    - Any relevant stock tickers, indices, or company names (e.g. "RELIANCE", "NIFTY50", "BTC").
-   - Any secondary categories the article falls into from the allowed list ("IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities"). For example, if an article is primarily about "Global" markets but heavily features Bitcoin, set category to "Global" and add "Crypto" to the tags array.
+   - Any secondary categories the article falls into from the allowed list ("IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities", "Finance", "Companies", "Indian Market"). For example, if an article is primarily about "Global" markets but heavily features Bitcoin, set category to "Global" and add "Crypto" to the tags array.
 
 Article headline: {headline}
 Article text: {text}
@@ -46,7 +46,7 @@ For EACH article, produce exactly one summary object.
 Return a JSON array of objects, where each object corresponds to the input article in the exact same order.
 Each output object MUST have exactly these fields:
 1. "detailed_summary": exactly 3 paragraphs, 200-250 words. Do NOT hallucinate.
-2. "category": EXACTLY ONE of "IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities".
+2. "category": EXACTLY ONE of "IPO", "Stocks", "Economy", "Global", "Crypto", "Commodities", "Finance", "Companies", "Indian Market".
 3. "tags": Array of up to 7 items (tickers, secondary categories).
 
 Input Format:
