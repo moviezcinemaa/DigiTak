@@ -7,6 +7,7 @@ export interface MovieNews {
     hotspot?: { x: number; y: number };
   };
   financialNews?: any[];
+  summaryPreview?: string;
   youtubeReactions?: string;
   telegramLink: string;
 }

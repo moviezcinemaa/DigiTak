@@ -4,7 +4,7 @@ import { sanityClient, urlFor } from "../lib/sanity";
 import type { MovieNews } from "../types/sanity";
 
 const QUERY = `*[_type == "movieNews"] | order(_createdAt desc) {
-  _id, title, slug, poster, telegramLink
+  _id, title, slug, poster, telegramLink, "summaryPreview": pt::text(financialNews)
 }`;
 
 export default function MoviesFeed() {
@@ -64,6 +64,11 @@ export default function MoviesFeed() {
           if (itemsInThisRow === 1) span = 6;
           else if (itemsInThisRow === 2) span = 3;
 
+          let truncated = movie.summaryPreview || "";
+          if (truncated.length > 120) {
+            truncated = truncated.slice(0, 120).trimEnd() + "...";
+          }
+
           return (
             <div key={movie._id} className="news-grid-item-dynamic" style={{ '--dynamic-span': span } as any}>
               <Link
@@ -72,11 +77,11 @@ export default function MoviesFeed() {
                 style={{ textDecoration: 'none' }}
               >
                 {movie.poster ? (
-                  <div className="news-card-image" style={{ backgroundColor: '#000' }}>
+                  <div className="news-card-image">
                     <img
                       src={urlFor(movie.poster).width(800).url()}
                       alt={movie.title}
-                      style={{ objectFit: 'contain' }}
+                      loading="lazy"
                     />
                   </div>
                 ) : (
@@ -86,6 +91,9 @@ export default function MoviesFeed() {
                   <h2 className="news-card-headline" style={{ margin: 0 }}>
                     {movie.title}
                   </h2>
+                  {truncated && (
+                    <p className="news-card-preview">{truncated}</p>
+                  )}
                 </div>
               </Link>
             </div>
