@@ -12,13 +12,19 @@ export default function CategoryBar({ active, onChange }: CategoryBarProps) {
 
   return (
     <div className="category-bar-wrapper">
+      {isExpanded && (
+        <div className="category-backdrop" onClick={() => setIsExpanded(false)} />
+      )}
       <div className={`category-bar ${isExpanded ? "expanded" : ""}`}>
         <div className="category-chips">
           {CATEGORIES.map((cat) => (
              <button
               key={cat}
               className={`category-chip${active === cat ? " active" : ""}`}
-              onClick={() => onChange(cat)}
+              onClick={() => {
+                onChange(cat);
+                setIsExpanded(false);
+              }}
             >
               {cat}
             </button>
