@@ -14,7 +14,7 @@ export default function MovieEntry() {
     if (!slug) return;
     const query = `*[_type == "movieNews" && slug.current == $slug][0]`;
     const relatedQuery = `*[_type == "movieNews" && slug.current != $slug] | order(_createdAt desc)[0...4] {
-      _id, title, slug, poster
+      _id, title, slug, poster, "summaryPreview": pt::text(financialNews)
     }`;
     
     Promise.all([
@@ -88,6 +88,11 @@ export default function MovieEntry() {
               if (itemsInThisRow === 1) span = 6;
               else if (itemsInThisRow === 2) span = 3;
               
+              let truncated = relMovie.summaryPreview || "";
+              if (truncated.length > 120) {
+                truncated = truncated.slice(0, 120).trimEnd() + "...";
+              }
+              
               return (
                 <div key={relMovie._id} className="news-grid-item-dynamic" style={{ '--dynamic-span': span } as any}>
                   <Link
@@ -96,11 +101,11 @@ export default function MovieEntry() {
                     style={{ textDecoration: 'none' }}
                   >
                     {relMovie.poster ? (
-                      <div className="news-card-image" style={{ backgroundColor: '#000' }}>
+                      <div className="news-card-image">
                         <img
                           src={urlFor(relMovie.poster).width(800).url()}
                           alt={relMovie.title}
-                          style={{ objectFit: 'contain' }}
+                          loading="lazy"
                         />
                       </div>
                     ) : (
@@ -110,6 +115,9 @@ export default function MovieEntry() {
                       <h2 className="news-card-headline" style={{ margin: 0 }}>
                         {relMovie.title}
                       </h2>
+                      {truncated && (
+                        <p className="news-card-preview">{truncated}</p>
+                      )}
                     </div>
                   </Link>
                 </div>
