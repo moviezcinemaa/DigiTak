@@ -170,7 +170,8 @@ class Summarizer:
                 "allam-2-7b",
                 "deepseek-r1-distill-llama-70b",
                 "llama3-70b-8192",
-                "llama3-8b-8192"
+                "llama3-8b-8192",
+                "canopylabs/orpheus-v1-english"
             ]
             last_err = None
             for model_name in models:
@@ -287,7 +288,8 @@ class Summarizer:
             "allam-2-7b",
             "deepseek-r1-distill-llama-70b",
             "llama3-70b-8192",
-            "llama3-8b-8192"
+            "llama3-8b-8192",
+            "canopylabs/orpheus-v1-english"
         ]
 
         last_error = None
