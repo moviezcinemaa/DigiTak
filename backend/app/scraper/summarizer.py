@@ -157,18 +157,37 @@ class Summarizer:
         elif provider == "groq":
             from openai import AsyncOpenAI
             client = AsyncOpenAI(api_key=self.settings.groq_api_key, base_url="https://api.groq.com/openai/v1")
-            response = await client.chat.completions.create(
-                model="llama-3.1-8b-instant", messages=[{"role": "user", "content": prompt}], max_tokens=2000
-            )
-            return response.choices[0].message.content
+            
+            models = ["llama-3.1-8b-instant", "llama-3.1-70b-versatile", "mixtral-8x7b-32768", "llama-3.2-1b-preview", "llama-3.2-3b-preview", "llama-3.3-70b-versatile"]
+            last_err = None
+            for model_name in models:
+                try:
+                    response = await client.chat.completions.create(
+                        model=model_name, messages=[{"role": "user", "content": prompt}], max_tokens=2000
+                    )
+                    return response.choices[0].message.content
+                except Exception as e:
+                    last_err = e
+                    continue
+            raise last_err
+            
         elif provider == "openrouter":
             from openai import AsyncOpenAI
             client = AsyncOpenAI(api_key=self.settings.openrouter_api_key, base_url="https://openrouter.ai/api/v1")
-            response = await client.chat.completions.create(
-                model="google/gemma-4-26b-a4b-it:free", messages=[{"role": "user", "content": prompt}], max_tokens=2000,
-                extra_headers={"HTTP-Referer": self.settings.frontend_url, "X-Title": "DigiTak"}
-            )
-            return response.choices[0].message.content
+            
+            models = ["google/gemma-2-9b-it:free", "meta-llama/llama-3.1-8b-instruct:free", "mistralai/mistral-7b-instruct:free", "openrouter/auto"]
+            last_err = None
+            for model_name in models:
+                try:
+                    response = await client.chat.completions.create(
+                        model=model_name, messages=[{"role": "user", "content": prompt}], max_tokens=2000,
+                        extra_headers={"HTTP-Referer": self.settings.frontend_url, "X-Title": "DigiTak"}
+                    )
+                    return response.choices[0].message.content
+                except Exception as e:
+                    last_err = e
+                    continue
+            raise last_err
         return None
 
     async def summarize(
