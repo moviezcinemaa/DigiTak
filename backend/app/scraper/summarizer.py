@@ -182,7 +182,7 @@ class Summarizer:
                 "llama3-8b-8192",
                 "canopylabs/orpheus-v1-english",
                 "llama-3.1-70b-versatile",
-                "qwen-2.5-coder-32b"
+                "qwen-qwq-32b"
             ]
             last_err = None
             for model_name in models:
@@ -302,7 +302,7 @@ class Summarizer:
             "llama3-8b-8192",
             "canopylabs/orpheus-v1-english",
             "llama-3.1-70b-versatile",
-            "qwen-2.5-coder-32b"
+            "qwen-qwq-32b"
         ]
 
         last_error = None
