@@ -167,7 +167,7 @@ export default function Verify() {
           </div>
         )}
 
-        <div className="verify-spacer" />
+        <div style={{ height: '32px' }} />
 
         <div className="verify-footer-action">
           {timerDone ? (
