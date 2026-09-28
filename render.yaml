@@ -19,7 +19,7 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: FRONTEND_URL
-        value: "https://gofact-frontend.onrender.com"
+        value: "https://gofact.in"
       - key: GEMINI_API_KEY
         sync: false
       - key: GROQ_API_KEY

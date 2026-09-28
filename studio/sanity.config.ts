@@ -20,6 +20,8 @@ export default defineConfig({
     allowOrigins: [
       'http://localhost:5173',
       'https://gofact-frontend.onrender.com',
+      'https://gofact.in',
+      'https://www.gofact.in',
     ],
     allowCredentials: true,
   },
