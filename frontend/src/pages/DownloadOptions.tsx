@@ -9,6 +9,7 @@ export default function DownloadOptions() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (!slug) return;
     const query = `*[_type == "movieNews" && slug.current == $slug][0]{
       _id, title, slug, poster, telegramLink

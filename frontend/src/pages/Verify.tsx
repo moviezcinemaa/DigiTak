@@ -13,6 +13,7 @@ export default function Verify() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (!slug) return;
     const query = `*[_type == "movieNews" && slug.current == $slug][0]{
       _id, title, slug, youtubeReactions, telegramLink

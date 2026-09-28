@@ -11,6 +11,7 @@ export default function MovieEntry() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (!slug) return;
     const query = `*[_type == "movieNews" && slug.current == $slug][0]`;
     const relatedQuery = `*[_type == "movieNews" && slug.current != $slug] | order(_createdAt desc)[0...4] {
