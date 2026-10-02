@@ -49,7 +49,7 @@ export default function DownloadOptions() {
     <>
       <section className="download-page">
         <h1 className="download-title">{movie.title}</h1>
-        <p className="download-subtitle">Select your preferred quality</p>
+        <p className="download-subtitle">Select Community Resource</p>
 
         {movie.poster ? (
           <img
@@ -75,21 +75,21 @@ export default function DownloadOptions() {
             className="download-btn"
             onClick={handleDownload}
           >
-            Download 1080p
+            Access 1080p
           </button>
           <button
             type="button"
             className="download-btn"
             onClick={handleDownload}
           >
-            Download 720p
+            Access 720p
           </button>
           <button
             type="button"
             className="download-btn"
             onClick={handleDownload}
           >
-            Download 480p
+            Access 480p
           </button>
         </div>
       </section>

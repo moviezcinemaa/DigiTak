@@ -73,7 +73,7 @@ export default function MovieEntry() {
       <div className="movie-entry-cta">
         <Link to={`/verify/${movie.slug.current}`} className="movie-cta-link">
           <div className="movie-cta-box">
-            <span className="movie-cta-text">How to Download</span>
+            <span className="movie-cta-text">Join Telegram Community</span>
           </div>
         </Link>
       </div>

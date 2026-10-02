@@ -41,7 +41,7 @@ export default function Home() {
 
       if (activeCategory === "All" || activeCategory === "Movies") {
         const moviesQuery = `*[_type == "movieNews"] | order(_createdAt desc) {
-          _id, title, slug, poster, "summaryPreview": pt::text(financialNews)
+          _id, title, slug, poster, "summaryPreview": pt::text(financialNews), _createdAt
         }`;
         const moviesData = await sanityClient.fetch(moviesQuery);
         
@@ -52,8 +52,8 @@ export default function Home() {
           source_domain: "GoFact Movies",
           ai_summary: m.summaryPreview ? m.summaryPreview.substring(0, 150) + "..." : null,
           market_impact: null,
-          published_at: null,
-          created_at: new Date().toISOString(),
+          published_at: m._createdAt,
+          created_at: m._createdAt,
           image_url: m.poster ? urlFor(m.poster).width(800).url() : null,
           image_source: null,
           category: "Movies",
@@ -65,10 +65,32 @@ export default function Home() {
         if (activeCategory === "Movies") {
           fetchedArticles = mappedMovies;
           fetchedTotal = mappedMovies.length;
-        } else if (page === 1) {
-          // Put the 3 latest movies at the top of the "All" feed
-          fetchedArticles = [...mappedMovies.slice(0, 3), ...fetchedArticles];
-          fetchedTotal += 3;
+        } else if (activeCategory === "All") {
+          // Calculate date range of current page to interleave movies naturally
+          const pageArticles = [...fetchedArticles];
+          
+          if (pageArticles.length > 0) {
+            const newestArticleDate = new Date(pageArticles[0].published_at || pageArticles[0].created_at).getTime();
+            const oldestArticleDate = new Date(pageArticles[pageArticles.length - 1].published_at || pageArticles[pageArticles.length - 1].created_at).getTime();
+            
+            // Filter movies that belong on this page chronologically
+            const moviesForThisPage = mappedMovies.filter(m => {
+              const movieDate = new Date(m.published_at!).getTime();
+              // If page 1, include all newer movies. Otherwise strict boundary.
+              if (page === 1 && movieDate >= oldestArticleDate) return true;
+              return movieDate >= oldestArticleDate && movieDate < newestArticleDate;
+            });
+            
+            // Combine and sort chronologically
+            fetchedArticles = [...moviesForThisPage, ...pageArticles].sort((a, b) => {
+              const dateA = new Date(a.published_at || a.created_at).getTime();
+              const dateB = new Date(b.published_at || b.created_at).getTime();
+              return dateB - dateA;
+            });
+          } else {
+            // If API returned 0 articles but we have movies, just show movies (edge case)
+            fetchedArticles = mappedMovies;
+          }
         }
       }
 

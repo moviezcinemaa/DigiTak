@@ -182,7 +182,7 @@ export default function Verify() {
               className="verify-btn verify-btn-active"
               style={{ width: "100%" }}
             >
-              Get Link
+              Join Telegram
             </Link>
           ) : (
             <button
@@ -191,7 +191,7 @@ export default function Verify() {
               disabled
               style={{ width: "100%" }}
             >
-              Wait to Get Link...
+              Wait to Join...
             </button>
           )}
         </div>
