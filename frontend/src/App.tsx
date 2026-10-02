@@ -11,13 +11,11 @@ import MovieEntry from "./pages/MovieEntry";
 import Verify from "./pages/Verify";
 import DownloadOptions from "./pages/DownloadOptions";
 import RouteTracker from "./components/RouteTracker";
-import CookieConsent from "./components/CookieConsent";
 
 export default function App() {
   return (
     <BrowserRouter>
       <RouteTracker />
-      <CookieConsent />
       <Routes>
         {/* Main site — wrapped in Layout (header + footer) */}
         <Route element={<Layout />}>
