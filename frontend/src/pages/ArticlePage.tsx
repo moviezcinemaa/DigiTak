@@ -90,7 +90,7 @@ export default function ArticlePage() {
 
   return (
     <div className="article-detail">
-      <Link to="/" className="back-link">
+      <Link to={article.category ? `/?category=${encodeURIComponent(article.category)}` : "/"} className="back-link">
         ← Back to feed
       </Link>
 

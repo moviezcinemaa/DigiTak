@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { fetchArticles, searchArticles } from "../api/client";
 import { sanityClient, urlFor } from "../lib/sanity";
 import type { Article, Category } from "../types";
@@ -9,8 +10,10 @@ import SearchBar from "../components/SearchBar";
 import SkeletonLoader from "../components/SkeletonLoader";
 
 export default function Home() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialCategory = (searchParams.get("category") as Category) || "All";
   const [articles, setArticles] = useState<Article[]>([]);
-  const [activeCategory, setActiveCategory] = useState<Category>("All");
+  const [activeCategory, setActiveCategory] = useState<Category>(initialCategory);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -18,6 +21,14 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const perPage = 18;
+
+  useEffect(() => {
+    const cat = (searchParams.get("category") as Category) || "All";
+    if (cat !== activeCategory) {
+      setActiveCategory(cat);
+      setPage(1);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!isSearching) {
@@ -130,6 +141,7 @@ export default function Home() {
 
   function handleCategoryChange(cat: Category) {
     setActiveCategory(cat);
+    setSearchParams(cat === "All" ? {} : { category: cat });
     setPage(1);
     if (isSearching) {
       setIsSearching(false);

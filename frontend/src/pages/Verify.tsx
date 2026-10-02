@@ -65,7 +65,7 @@ export default function Verify() {
       <section className="verify-page">
         <h1>Not Found</h1>
         <p>This entry does not exist.</p>
-        <Link to="/movies" className="movie-back-link">Back to Movies</Link>
+        <Link to="/?category=Movies" className="back-link">← Back to feed</Link>
       </section>
     );
   }

@@ -45,14 +45,14 @@ export default function MovieEntry() {
       <section className="movie-entry">
         <h1>Not Found</h1>
         <p>This movie entry does not exist.</p>
-        <Link to="/movies" className="back-link">← Back to movies</Link>
+        <Link to="/?category=Movies" className="back-link">← Back to feed</Link>
       </section>
     );
   }
 
   return (
     <section className="movie-entry">
-      <Link to="/movies" className="back-link">← Back to movies</Link>
+      <Link to="/?category=Movies" className="back-link">← Back to feed</Link>
 
       <h1 className="movie-entry-title">{movie.title}</h1>
 
