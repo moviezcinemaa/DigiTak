@@ -10,10 +10,12 @@ import MoviesFeed from "./pages/MoviesFeed";
 import MovieEntry from "./pages/MovieEntry";
 import Verify from "./pages/Verify";
 import DownloadOptions from "./pages/DownloadOptions";
+import RouteTracker from "./components/RouteTracker";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <RouteTracker />
       <Routes>
         {/* Main site — wrapped in Layout (header + footer) */}
         <Route element={<Layout />}>

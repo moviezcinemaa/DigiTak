@@ -27,16 +27,27 @@ export default function PrivacyPolicy() {
             page views, traffic sources). These help us improve the service.
           </li>
           <li>
-            Advertising cookies placed by Google AdSense to serve relevant
-            advertisements. Google may use information about your visits to
-            this and other websites to provide targeted ads. You can opt out of
-            personalized advertising by visiting{" "}
+            Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites.
+          </li>
+          <li>
+            Google's use of advertising cookies enables it and its partners to serve ads to your users based on their visit to your sites and/or other sites on the Internet.
+          </li>
+          <li>
+            Users may opt out of personalized advertising by visiting{" "}
             <a
               href="https://www.google.com/settings/ads"
               target="_blank"
               rel="noopener noreferrer"
             >
               Google Ads Settings
+            </a>
+            . Alternatively, you can opt out of a third-party vendor's use of cookies for personalized advertising by visiting{" "}
+            <a
+              href="https://www.aboutads.info"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              www.aboutads.info
             </a>
             .
           </li>

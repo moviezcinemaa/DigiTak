@@ -7,6 +7,19 @@
     <meta name="description" content="Rapid, AI-summarized financial news from Reuters, CNBC, Yahoo Finance, MarketWatch, and Bloomberg. Updated hourly." />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // Configure without sending the default pageview on load (we handle it in React)
+      gtag('config', 'G-XXXXXXXXXX', {
+        send_page_view: false
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
