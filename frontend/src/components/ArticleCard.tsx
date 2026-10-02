@@ -32,9 +32,11 @@ export default function ArticleCard({ article }: { article: Article }) {
       ? summaryPreview.slice(0, 120).trimEnd() + "..."
       : summaryPreview;
 
+  const linkPath = article.category === "Movies" ? `/movies/${article.id}` : `/article/${article.id}`;
+
   return (
     <div className="news-card">
-      <Link to={`/article/${article.id}`} className="news-card-image-link">
+      <Link to={linkPath} className="news-card-image-link">
         <div className="news-card-image">
           <img
             src={article.image_url || PLACEHOLDER_IMAGE}
@@ -55,7 +57,7 @@ export default function ArticleCard({ article }: { article: Article }) {
           <span className="article-time">{formatTime(article.published_at)}</span>
         </div>
         <h2 className="news-card-headline">
-          <Link to={`/article/${article.id}`}>
+          <Link to={linkPath}>
             {article.original_headline}
           </Link>
         </h2>

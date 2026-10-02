@@ -30,6 +30,8 @@ export default function ArticleListItem({ article }: { article: Article }) {
       ? summaryPreview.slice(0, 180).trimEnd() + "..."
       : summaryPreview;
 
+  const linkPath = article.category === "Movies" ? `/movies/${article.id}` : `/article/${article.id}`;
+
   return (
     <div className="news-list-item">
       <div className="news-list-item-body">
@@ -41,7 +43,7 @@ export default function ArticleListItem({ article }: { article: Article }) {
           <span className="article-time">{formatTime(article.published_at)}</span>
         </div>
         <h2 className="news-list-item-headline">
-          <Link to={`/article/${article.id}`}>
+          <Link to={linkPath}>
             {article.original_headline}
           </Link>
         </h2>

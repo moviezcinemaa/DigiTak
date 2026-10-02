@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { fetchArticles, searchArticles } from "../api/client";
+import { sanityClient, urlFor } from "../lib/sanity";
 import type { Article, Category } from "../types";
 import ArticleCard from "../components/ArticleCard";
 import ArticleListItem from "../components/ArticleListItem";
@@ -32,10 +33,47 @@ export default function Home() {
         page,
         perPage,
         undefined,
-        activeCategory !== "All" ? activeCategory : undefined
+        activeCategory !== "All" && activeCategory !== "Movies" ? activeCategory : undefined
       );
-      setArticles(data.articles);
-      setTotal(data.total);
+      
+      let fetchedArticles = data.articles;
+      let fetchedTotal = data.total;
+
+      if (activeCategory === "All" || activeCategory === "Movies") {
+        const moviesQuery = `*[_type == "movieNews"] | order(_createdAt desc) {
+          _id, title, slug, poster, "summaryPreview": pt::text(financialNews)
+        }`;
+        const moviesData = await sanityClient.fetch(moviesQuery);
+        
+        const mappedMovies: Article[] = moviesData.map((m: any) => ({
+          id: m.slug.current,
+          original_headline: m.title,
+          original_url: `/movies/${m.slug.current}`,
+          source_domain: "GoFact Movies",
+          ai_summary: m.summaryPreview ? m.summaryPreview.substring(0, 150) + "..." : null,
+          market_impact: null,
+          published_at: null,
+          created_at: new Date().toISOString(),
+          image_url: m.poster ? urlFor(m.poster).width(800).url() : null,
+          image_source: null,
+          category: "Movies",
+          tags: ["Movies"],
+          detailed_summary: null,
+          additional_sources: null
+        }));
+
+        if (activeCategory === "Movies") {
+          fetchedArticles = mappedMovies;
+          fetchedTotal = mappedMovies.length;
+        } else if (page === 1) {
+          // Put the 3 latest movies at the top of the "All" feed
+          fetchedArticles = [...mappedMovies.slice(0, 3), ...fetchedArticles];
+          fetchedTotal += 3;
+        }
+      }
+
+      setArticles(fetchedArticles);
+      setTotal(fetchedTotal);
     } catch {
       setError(
         "Unable to load articles. The backend may not be running yet."

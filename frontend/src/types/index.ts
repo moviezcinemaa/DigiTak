@@ -30,7 +30,7 @@ export interface SearchResponse {
   query: string;
 }
 
-export type Category = "All" | "IPO" | "Stocks" | "Economy" | "Global" | "Crypto" | "Commodities" | "Finance" | "Companies" | "Indian Market";
+export type Category = "All" | "IPO" | "Stocks" | "Economy" | "Global" | "Crypto" | "Commodities" | "Finance" | "Companies" | "Indian Market" | "Movies";
 
 export const CATEGORIES: Category[] = [
   "All",
@@ -42,5 +42,6 @@ export const CATEGORIES: Category[] = [
   "Commodities",
   "Finance",
   "Companies",
-  "Indian Market"
+  "Indian Market",
+  "Movies"
 ];

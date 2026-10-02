@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { PortableText } from "@portabletext/react";
 import { sanityClient, urlFor } from "../lib/sanity";
 import type { MovieNews } from "../types/sanity";
 
@@ -12,7 +13,7 @@ export default function DownloadOptions() {
     window.scrollTo(0, 0);
     if (!slug) return;
     const query = `*[_type == "movieNews" && slug.current == $slug][0]{
-      _id, title, slug, poster, telegramLink
+      _id, title, slug, poster, telegramLink, financialNews
     }`;
     sanityClient.fetch(query, { slug }).then((data: MovieNews | null) => {
       setMovie(data);
@@ -46,7 +47,6 @@ export default function DownloadOptions() {
 
   return (
     <>
-      <meta name="robots" content="noindex, nofollow" />
       <section className="download-page">
         <h1 className="download-title">{movie.title}</h1>
         <p className="download-subtitle">Select your preferred quality</p>
@@ -60,6 +60,12 @@ export default function DownloadOptions() {
         ) : (
           <div className="movie-poster-placeholder" style={{ margin: "0 auto 32px auto", maxWidth: "800px", width: "100%", aspectRatio: "2/3" }}>
             {movie.title[0]}
+          </div>
+        )}
+
+        {movie.financialNews && (
+          <div className="movie-entry-body" style={{ marginTop: '32px', marginBottom: '32px' }}>
+            <PortableText value={movie.financialNews} />
           </div>
         )}
 

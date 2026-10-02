@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
+import { PortableText } from "@portabletext/react";
 import { sanityClient, urlFor } from "../lib/sanity";
 import type { MovieNews } from "../types/sanity";
 
@@ -17,7 +18,7 @@ export default function Verify() {
     window.scrollTo(0, 0);
     if (!slug) return;
     const query = `*[_type == "movieNews" && slug.current == $slug][0]{
-      _id, title, slug, youtubeReactions, telegramLink
+      _id, title, slug, youtubeReactions, telegramLink, financialNews
     }`;
     const relatedQuery = `*[_type == "movieNews" && slug.current != $slug] | order(_createdAt desc)[0...4] {
       _id, title, slug, poster, "summaryPreview": pt::text(financialNews)
@@ -71,7 +72,6 @@ export default function Verify() {
 
   return (
     <>
-      <meta name="robots" content="noindex, nofollow" />
       <section className="verify-page">
         <h1 className="verify-title">{movie.title}</h1>
         <div className="verify-timer-section">
@@ -109,6 +109,12 @@ export default function Verify() {
           alt="Reactions placeholder" 
           style={{ width: "100%", aspectRatio: "16/9", objectFit: "cover", marginBottom: "24px", border: "1px solid var(--border-color)" }} 
         />
+
+        {movie.financialNews && (
+          <div className="movie-entry-body" style={{ marginTop: '24px', marginBottom: '24px' }}>
+            <PortableText value={movie.financialNews} />
+          </div>
+        )}
 
         {movie.youtubeReactions && (
           <div className="verify-reactions">

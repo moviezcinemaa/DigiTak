@@ -27,11 +27,9 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/movies" element={<MoviesFeed />} />
           <Route path="/movies/:slug" element={<MovieEntry />} />
+          <Route path="/verify/:slug" element={<Verify />} />
+          <Route path="/download-options/:slug" element={<DownloadOptions />} />
         </Route>
-
-        {/* Isolated funnel routes — NO layout, NO nav, NO footer */}
-        <Route path="/verify/:slug" element={<Verify />} />
-        <Route path="/download-options/:slug" element={<DownloadOptions />} />
       </Routes>
     </BrowserRouter>
   );
